@@ -1,12 +1,12 @@
-# Niên luận Cơ sở/Chuyên ngành CTXXX
+# Niên luận Chuyên ngành CT46605
 
-**Học kỳ**: X, **Năm học**: 20XX-20XX
+**Học kỳ**: 1, **Năm học**: 2024-2025
 
-**MSSV**: X
+**MSSV**: B2111802
 
-**Họ tên**: X
+**Họ tên**: Dương Lập Khang
 
-**Tên đề tài**: X
+**Tên đề tài**: Website bán khóa học và dụng cụ luyện viết chữ đẹp
 
 ---
 
