@@ -20,7 +20,7 @@ public class ToolType extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long toolTypeId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @NotBlank(message = "Tool type name could not be blank")
     String name;
 

@@ -26,6 +26,12 @@ public class ToolService {
     private final FilterSpecificationConverter filterSpecificationConverter;
 
     public Tool getToolById(long toolId) throws IdInvalidException {
+        return toolRepository.findByIdIfNotDeleted(toolId).orElseThrow(
+                () -> new IdInvalidException("Tool with id: " + toolId + " not found")
+        );
+    }
+
+    public Tool getToolByIdAdmin(long toolId) throws IdInvalidException {
         return toolRepository.findById(toolId).orElseThrow(
                 () -> new IdInvalidException("Tool with id: " + toolId + " not found")
         );
@@ -70,6 +76,14 @@ public class ToolService {
 
     public ResPaginationDTO getAllTool(Pageable pageable) {
         FilterNode node = filterParser.parse("deleted=false");
+        FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
+
+        Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+    }
+
+    public ResPaginationDTO getAllToolAdmin(Pageable pageable) {
+        FilterNode node = filterParser.parse("");
         FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
 
         Page<Tool> pageTools = toolRepository.findAll(spec, pageable);

@@ -22,11 +22,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ToolTypeService {
     private final ToolTypeRepository toolTypeRepository;
-
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
 
     public ToolType getToolTypeById(long id) throws IdInvalidException {
+        return toolTypeRepository.findByIdIfNotDeleted(id).orElseThrow(
+                () -> new IdInvalidException("Tool type with id: " + id + " not found")
+        );
+    }
+
+    public ToolType getToolTypeByIdAdmin(long id) throws IdInvalidException {
         return toolTypeRepository.findById(id).orElseThrow(
                 () -> new IdInvalidException("Tool type with id: " + id + " not found")
         );
@@ -34,7 +39,7 @@ public class ToolTypeService {
 
     public ToolType createToolType(ToolType toolType) {
         // check tool type name in db
-        Optional<ToolType> existingToolType = toolTypeRepository.findByName(toolType.getName());
+        Optional<ToolType> existingToolType = toolTypeRepository.findByNameNotDeleted(toolType.getName());
 
         if (existingToolType.isPresent()) {
             throw new IllegalArgumentException("Tool type with name: '" + toolType.getName() + "' already exist");
@@ -65,6 +70,14 @@ public class ToolTypeService {
 
     public ResPaginationDTO getAllToolType(Pageable pageable) {
         FilterNode node = filterParser.parse("deleted=false");
+        FilterSpecification<ToolType> spec = filterSpecificationConverter.convert(node);
+
+        Page<ToolType> pageToolTypes = toolTypeRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageToolTypes, pageable);
+    }
+
+    public ResPaginationDTO getAllToolTypeAdmin(Pageable pageable) {
+        FilterNode node = filterParser.parse("");
         FilterSpecification<ToolType> spec = filterSpecificationConverter.convert(node);
 
         Page<ToolType> pageToolTypes = toolTypeRepository.findAll(spec, pageable);
