@@ -7,7 +7,6 @@ import com.dlk.ct466.repository.ToolRepository;
 import com.dlk.ct466.repository.ToolTypeRepository;
 import com.dlk.ct466.util.PaginationUtil;
 import com.dlk.ct466.util.error.IdInvalidException;
-import com.turkraft.springfilter.builder.FilterBuilder;
 import com.turkraft.springfilter.converter.FilterSpecification;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
@@ -15,7 +14,6 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service

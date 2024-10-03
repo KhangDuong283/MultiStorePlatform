@@ -28,4 +28,6 @@ public class ToolType extends BaseEntity {
     @JsonIgnore
     List<Tool> tools;
 
+    @Column(name = "deleted", nullable = false)
+    boolean deleted = false;
 }
