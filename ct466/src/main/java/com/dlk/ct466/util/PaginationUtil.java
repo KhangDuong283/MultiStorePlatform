@@ -20,7 +20,7 @@ public class PaginationUtil {
             Function<T, DTO> converter
     ) {
         ResPaginationDTO.Meta meta = new ResPaginationDTO.Meta();
-        meta.setPage(pageable.getPageNumber()); // Trang hiện tại (0 bắt đầu từ 0)
+        meta.setPage(pageable.getPageNumber() + 1); // Trang hiện tại (bắt đầu từ 1)
         meta.setPageSize(pageable.getPageSize()); // Kích thước mỗi trang
         meta.setPages(pageEntity.getTotalPages()); // Tổng số trang
         meta.setTotal(pageEntity.getTotalElements()); // Tổng số phần tử
