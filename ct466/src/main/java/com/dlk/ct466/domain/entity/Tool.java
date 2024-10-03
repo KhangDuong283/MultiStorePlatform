@@ -39,9 +39,6 @@ public class Tool extends BaseEntity {
     String imageUrl;
 
     @Column(nullable = false)
-    boolean isActive = true;
-
-    @Column(nullable = false)
     @NotNull(message = "Tool price could not be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     BigDecimal price;
@@ -50,6 +47,9 @@ public class Tool extends BaseEntity {
     @JoinColumn(name = "tool_type_id", nullable = false)
     ToolType toolType;
 
-    @Column(name = "deleted", nullable = false)
+    @Column(nullable = false)
     boolean deleted = false;
+
+    @Column(nullable = false)
+    boolean isActive = true;
 }
