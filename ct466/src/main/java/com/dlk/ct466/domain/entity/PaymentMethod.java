@@ -24,6 +24,6 @@ public class PaymentMethod extends BaseEntity {
     @Column(nullable = false)
     boolean isActive = true;
 
-    @Column(name = "deleted", nullable = false)
+    @Column(nullable = false)
     boolean deleted = false;
 }
