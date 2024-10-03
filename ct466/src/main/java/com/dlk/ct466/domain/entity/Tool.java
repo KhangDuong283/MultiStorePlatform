@@ -38,6 +38,8 @@ public class Tool extends BaseEntity {
     int stockQuantity;
     String imageUrl;
 
+    @Column(nullable = false)
+    boolean isActive = true;
 
     @Column(nullable = false)
     @NotNull(message = "Tool price could not be null")
