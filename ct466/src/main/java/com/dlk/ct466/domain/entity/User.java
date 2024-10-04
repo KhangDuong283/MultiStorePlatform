@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user")
 @Data
@@ -33,4 +35,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     boolean isActive = true;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Address> address;
 }
