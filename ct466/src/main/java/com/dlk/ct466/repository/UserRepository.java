@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>,
+public interface UserRepository extends JpaRepository<User, String>,
         JpaSpecificationExecutor<User> {
     @Query("SELECT u FROM User u WHERE u.userId = :id AND u.deleted = false")
     Optional<User> findByIdIfNotDeleted(@Param("id") String id);

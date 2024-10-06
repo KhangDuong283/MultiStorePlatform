@@ -18,12 +18,19 @@ public class Address extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     String addressId;
 
+    // Đường
     @NotBlank(message = "Street could not be blank")
     String street;
 
+    // Phường xã
     @NotBlank(message = "Ward could not be blank")
     String ward;
 
+    // Quận huyện
+    @NotBlank(message = "District could not be blank")
+    String district;
+
+    // Tỉnh thành phố
     @NotBlank(message = "City could not be blank")
     String city;
 
@@ -32,6 +39,5 @@ public class Address extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
     User user;
 }

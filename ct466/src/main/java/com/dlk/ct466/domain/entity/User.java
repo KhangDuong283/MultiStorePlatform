@@ -1,5 +1,6 @@
 package com.dlk.ct466.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,5 +43,6 @@ public class User extends BaseEntity {
     String refreshToken;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Address> address;
 }
