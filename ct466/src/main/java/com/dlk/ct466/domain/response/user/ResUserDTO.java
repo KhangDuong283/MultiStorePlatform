@@ -12,7 +12,7 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ResUserDTO {
-    long userId;
+    String userId;
     String fullName;
     String email;
     boolean isActive = true;

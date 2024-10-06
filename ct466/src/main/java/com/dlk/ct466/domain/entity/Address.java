@@ -15,8 +15,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Address extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long addressId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String addressId;
 
     @NotBlank(message = "Street could not be blank")
     String street;

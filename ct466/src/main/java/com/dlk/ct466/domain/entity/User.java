@@ -1,6 +1,7 @@
 package com.dlk.ct466.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,13 +17,14 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String userId;
 
     @NotBlank(message = "Full name could not be blank")
     String fullName;
 
     @NotBlank(message = "Email could not be blank")
+    @Email(message = "Email should be valid")
     String email;
 
     @NotBlank(message = "Password could not be blank")
@@ -35,6 +37,9 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     boolean isActive = true;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    String refreshToken;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Address> address;

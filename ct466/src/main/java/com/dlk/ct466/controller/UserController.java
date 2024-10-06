@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiMessage("Get User by id")
-    public ResponseEntity<ResUserDTO> getById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResUserDTO> getById(@PathVariable("id") String id) throws IdInvalidException {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
@@ -35,19 +35,19 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ApiMessage("Update a user")
-    public ResponseEntity<ResUpdateUserDTO> update(@PathVariable("id") long id, @RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<ResUpdateUserDTO> update(@PathVariable("id") String id, @RequestBody User user) throws IdInvalidException {
         return ResponseEntity.ok(userService.updateUser(user, id));
     }
 
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a user")
-    public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) throws IdInvalidException {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
     @PatchMapping("{id}")
     @ApiMessage("Restore a user")
-    public ResponseEntity<Void> restore(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Void> restore(@PathVariable("id") String id) throws IdInvalidException {
         return ResponseEntity.ok(userService.restoreUser(id));
     }
 

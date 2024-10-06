@@ -24,11 +24,6 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
-    @Bean  // Khai báo một bean PasswordEncoder để Spring có thể sử dụng nó để mã hóa mật khẩu.
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Sử dụng BCrypt để băm (hash) mật khẩu.
-    }
-
     private static final String[] PUBLIC_ENDPOINTS = {
             "/",
             "/api/v1/auth/login",
@@ -87,11 +82,12 @@ public class SecurityConfiguration {
         // lấy ra chìa khóa để thực hiện giải mã (gồm secretKey và thuật toán)
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
                 .withSecretKey(getSecretKey())
-                .macAlgorithm(JWT_ALGORITHM).build();
+                .macAlgorithm(JWT_ALGORITHM)
+                .build();
 
         return (token) -> {
             try {
-                return jwtDecoder.decode(token);  // Giải mã và xác thực tính đúng đắn JWT
+                return jwtDecoder.decode(token);  // Giải mã JWT Token
             } catch (Exception e) {
                 System.out.println(">>> JWT Error: " + e.getMessage());
                 throw e;
@@ -99,4 +95,8 @@ public class SecurityConfiguration {
         };
     }
 
+    @Bean  // Sử dụng BCrypt để hash mật khẩu
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();  // Sử dụng BCrypt để băm (hash) mật khẩu.
+    }
 }

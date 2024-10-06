@@ -14,7 +14,7 @@ public class DateTimeFormatConfiguration implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        // Cau hinh su dung ISO format (ISO-8601)
+        // Cấu hình sử dụng định dạng ISO (ISO-8601)
         registrar.setUseIsoFormat(true);
         registrar.registerFormatters(registry);
     }

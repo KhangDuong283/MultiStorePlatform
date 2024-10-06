@@ -30,27 +30,36 @@ public class UserService {
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
 
-    public User fetchUserById(long id) throws IdInvalidException {
+    public User fetchUserById(String id) throws IdInvalidException {
         return userRepository.findByIdIfNotDeleted(id).orElseThrow(
                 () -> new IdInvalidException("User with id: '" + id + "' not found")
         );
     }
 
-    public ResUserDTO getUserById(long id) throws IdInvalidException {
+    public ResUserDTO getUserById(String id) throws IdInvalidException {
         User dbUser = userRepository.findByIdIfNotDeleted(id).orElseThrow(
                 () -> new IdInvalidException("User with id: '" + id + "' not found")
         );
         return UserMapper.mapToUserDTO(dbUser);
     }
 
-    public User fetchUserByIdAdmin(long id) throws IdInvalidException {
-        return userRepository.findById(id).orElseThrow(
+    public User fetchUserByIdAdmin(String id) throws IdInvalidException {
+        return userRepository.findByUserId(id).orElseThrow(
                 () -> new IdInvalidException("User with id: '" + id + "' not found")
         );
     }
 
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmailNotDeleted(email).orElse(null);
+    }
+
+    // tìm cả những tài khoản đã xóa và đã hủy kích hoạt
+    public Optional<User> findUserByEmailAdmin(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public ResCreateUserDTO createUser(User user) throws IdInvalidException {
-        Optional<User> dbUser = userRepository.findByEmailNotDeleted(user.getEmail());
+        Optional<User> dbUser = findUserByEmailAdmin(user.getEmail());
         if (dbUser.isPresent()) {
             throw new IdInvalidException("Email: '" + user.getEmail() + "' already exist");
         }
@@ -62,8 +71,7 @@ public class UserService {
         return UserMapper.mapToCreateUserDTO(newUser);
     }
 
-
-    public ResUpdateUserDTO updateUser(User user, long id) throws IdInvalidException {
+    public ResUpdateUserDTO updateUser(User user, String id) throws IdInvalidException {
         User dbUser = fetchUserById(id);
         dbUser.setFullName(user.getFullName());
         dbUser.setImageUrl(user.getImageUrl());
@@ -72,7 +80,7 @@ public class UserService {
         return UserMapper.mapToUpdateUserDTO(updatedUser);
     }
 
-    public Void deleteUser(long id) throws IdInvalidException {
+    public Void deleteUser(String id) throws IdInvalidException {
         User dbUser = fetchUserById(id).toBuilder()
                 .deleted(true)
                 .build();
@@ -80,7 +88,7 @@ public class UserService {
         return null;
     }
 
-    public Void restoreUser(long id) throws IdInvalidException {
+    public Void restoreUser(String id) throws IdInvalidException {
         User dbUser = fetchUserByIdAdmin(id).toBuilder()
                 .deleted(false)
                 .build();
@@ -102,5 +110,17 @@ public class UserService {
 
         Page<User> pageUser = userRepository.findAll(spec, pageable);
         return PaginationUtil.getPaginatedResult(pageUser, pageable, UserMapper::mapToUserDTO);
+    }
+
+    public void updateUserToken(String refreshToken, String email) {
+        User dbUser = findUserByEmail(email);
+        if (dbUser != null) {
+            dbUser.setRefreshToken(refreshToken);
+            userRepository.save(dbUser);
+        }
+    }
+
+    public Optional<User> getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        return userRepository.findByRefreshTokenAndEmail(refreshToken, email);
     }
 }

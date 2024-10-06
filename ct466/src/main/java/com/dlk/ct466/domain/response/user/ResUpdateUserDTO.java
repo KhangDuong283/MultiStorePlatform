@@ -11,7 +11,7 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ResUpdateUserDTO {
-    long userId;
+    String userId;
     String fullName;
     boolean isActive = true;
     String imageUrl;

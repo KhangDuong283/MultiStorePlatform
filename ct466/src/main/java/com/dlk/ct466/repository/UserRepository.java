@@ -14,8 +14,14 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>,
         JpaSpecificationExecutor<User> {
     @Query("SELECT u FROM User u WHERE u.userId = :id AND u.deleted = false")
-    Optional<User> findByIdIfNotDeleted(@Param("id") Long id);
+    Optional<User> findByIdIfNotDeleted(@Param("id") String id);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.deleted = false")
     Optional<User> findByEmailNotDeleted(@Param("email") String email);
+
+    Optional<User> findByRefreshTokenAndEmail(String token, String email);
+
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByUserId(String id);
 }

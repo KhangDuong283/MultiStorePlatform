@@ -1,7 +1,6 @@
 package com.dlk.ct466.controller;
 
 import com.dlk.ct466.domain.entity.PaymentMethod;
-import com.dlk.ct466.domain.entity.ToolType;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.service.PaymentMethodService;
 import com.dlk.ct466.util.annotation.ApiMessage;

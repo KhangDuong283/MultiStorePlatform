@@ -11,9 +11,10 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ResCreateUserDTO {
-    long userId;
+    String userId;
     String fullName;
     String email;
+    String accessToken;
     boolean isActive = true;
     String imageUrl;
     Instant createdAt;
