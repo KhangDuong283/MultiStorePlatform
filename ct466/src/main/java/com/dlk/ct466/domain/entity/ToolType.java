@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Entity
-@Table(name = "tool_type")
+@Table(name = "tool_types")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

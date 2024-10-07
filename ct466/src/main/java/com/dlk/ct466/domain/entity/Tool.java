@@ -1,6 +1,5 @@
 package com.dlk.ct466.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -8,12 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
-@Table(name = "tool")
+@Table(name = "tools")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,13 +42,16 @@ public class Tool extends BaseEntity {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     BigDecimal price;
 
-    @ManyToOne
-    @JoinColumn(name = "tool_type_id", nullable = false)
-    ToolType toolType;
-
     @Column(nullable = false)
     boolean deleted = false;
 
     @Column(nullable = false)
     boolean isActive = true;
+
+    @ManyToOne
+    @JoinColumn(name = "tool_type_id", nullable = false)
+    ToolType toolType;
+
+    @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
+    List<OrderTool> orderTools;
 }

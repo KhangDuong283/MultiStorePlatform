@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
-@Table(name = "payment_method")
+@Table(name = "payment_methods")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,7 @@ public class PaymentMethod extends BaseEntity {
 
     @Column(nullable = false)
     boolean deleted = false;
+
+    @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY)
+    List<Order> orders;
 }

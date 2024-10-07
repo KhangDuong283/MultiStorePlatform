@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,4 +45,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Address> address;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Order> orders;
 }
