@@ -64,4 +64,16 @@ public class GlobalException {
         res.setError("Exception occurs...");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
+
+    @ExceptionHandler(value = {
+            EnumNameNotValidException.class
+    })
+    public ResponseEntity<RestResponse<Object>> handleEnumNameNotValid(EnumNameNotValidException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setMessage(ex.getMessage());
+        res.setError("Invalid enum value provided");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
 }

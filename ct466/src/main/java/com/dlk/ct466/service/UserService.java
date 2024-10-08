@@ -104,10 +104,7 @@ public class UserService {
     }
 
     public ResPaginationDTO getAllUserAdmin(Pageable pageable) {
-        FilterNode node = filterParser.parse("");
-        FilterSpecification<User> spec = filterSpecificationConverter.convert(node);
-
-        Page<User> pageUser = userRepository.findAll(spec, pageable);
+        Page<User> pageUser = userRepository.findAll(pageable);
         return PaginationUtil.getPaginatedResult(pageUser, pageable, UserMapper::mapToUserDTO);
     }
 

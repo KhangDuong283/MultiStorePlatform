@@ -24,8 +24,8 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     @NotNull(message = "Shipping cost could not be null")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Shipping cost must be greater than 0")
-    BigDecimal shipping_cost;
+    @DecimalMin(value = "0.0", message = "Shipping cost must be greater than 0")
+    BigDecimal shippingCost;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

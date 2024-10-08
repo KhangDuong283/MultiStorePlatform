@@ -1,5 +1,6 @@
 package com.dlk.ct466.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -30,5 +31,6 @@ public class PaymentMethod extends BaseEntity {
     boolean deleted = false;
 
     @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Order> orders;
 }

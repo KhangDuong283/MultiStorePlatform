@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Table(name = "addresses")
 @Data
@@ -40,4 +42,8 @@ public class Address extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
+
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Order> orders;
 }

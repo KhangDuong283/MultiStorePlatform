@@ -77,10 +77,7 @@ public class ToolTypeService {
     }
 
     public ResPaginationDTO getAllToolTypeAdmin(Pageable pageable) {
-        FilterNode node = filterParser.parse("");
-        FilterSpecification<ToolType> spec = filterSpecificationConverter.convert(node);
-
-        Page<ToolType> pageToolTypes = toolTypeRepository.findAll(spec, pageable);
+        Page<ToolType> pageToolTypes = toolTypeRepository.findAll(pageable);
         return PaginationUtil.getPaginatedResult(pageToolTypes, pageable);
     }
 }

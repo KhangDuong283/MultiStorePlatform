@@ -83,10 +83,7 @@ public class ToolService {
     }
 
     public ResPaginationDTO getAllToolAdmin(Pageable pageable) {
-        FilterNode node = filterParser.parse("");
-        FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
-
-        Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
+        Page<Tool> pageTools = toolRepository.findAll(pageable);
         return PaginationUtil.getPaginatedResult(pageTools, pageable);
     }
 }

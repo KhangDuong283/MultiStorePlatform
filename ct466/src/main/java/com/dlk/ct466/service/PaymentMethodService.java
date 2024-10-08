@@ -77,10 +77,7 @@ public class PaymentMethodService {
     }
 
     public ResPaginationDTO getAllPaymentMethodAdmin(Pageable pageable) {
-        FilterNode node = filterParser.parse("");
-        FilterSpecification<PaymentMethod> spec = filterSpecificationConverter.convert(node);
-
-        Page<PaymentMethod> pagePaymentMethod = paymentMethodRepository.findAll(spec, pageable);
+        Page<PaymentMethod> pagePaymentMethod = paymentMethodRepository.findAll(pageable);
         return PaginationUtil.getPaginatedResult(pagePaymentMethod, pageable);
     }
 }

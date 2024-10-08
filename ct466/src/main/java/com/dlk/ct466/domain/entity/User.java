@@ -47,5 +47,6 @@ public class User extends BaseEntity {
     List<Address> address;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Order> orders;
 }
