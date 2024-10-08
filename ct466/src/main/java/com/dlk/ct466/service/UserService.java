@@ -1,6 +1,5 @@
 package com.dlk.ct466.service;
 
-import com.dlk.ct466.domain.entity.PaymentMethod;
 import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.mapper.UserMapper;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
@@ -36,7 +35,7 @@ public class UserService {
         );
     }
 
-    public ResUserDTO getUserById(String id) throws IdInvalidException {
+    public ResUserDTO getUserByIdDTO(String id) throws IdInvalidException {
         User dbUser = userRepository.findByIdIfNotDeleted(id).orElseThrow(
                 () -> new IdInvalidException("User with id: '" + id + "' not found")
         );

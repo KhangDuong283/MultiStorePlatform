@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping("/{id}")
     @ApiMessage("Get User by id")
     public ResponseEntity<ResUserDTO> getById(@PathVariable("id") String id) throws IdInvalidException {
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(userService.getUserByIdDTO(id));
     }
 
     @PostMapping

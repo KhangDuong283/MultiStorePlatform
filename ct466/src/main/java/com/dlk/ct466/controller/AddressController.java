@@ -2,6 +2,7 @@ package com.dlk.ct466.controller;
 
 import com.dlk.ct466.domain.entity.Address;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
+import com.dlk.ct466.domain.response.address.ResAddressDTO;
 import com.dlk.ct466.domain.response.address.ResCreateAddressDTO;
 import com.dlk.ct466.domain.response.address.ResUpdateAddressDTO;
 import com.dlk.ct466.service.AddressService;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +60,11 @@ public class AddressController {
             Pageable pageable
     ) {
         return ResponseEntity.ok(addressService.getAllAddress(pageable));
+    }
+
+    @GetMapping("/user-address/{userId}")
+    @ApiMessage("Get user address by user ID")
+    public ResponseEntity<List<ResAddressDTO>> getUserAddress(@PathVariable("userId") String userId) throws IdInvalidException {
+        return ResponseEntity.ok(addressService.getAddressByUserId(userId));
     }
 }

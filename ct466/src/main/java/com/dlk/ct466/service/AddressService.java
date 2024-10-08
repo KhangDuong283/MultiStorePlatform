@@ -19,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AddressService {
@@ -94,5 +97,13 @@ public class AddressService {
 
         Address newAddress = addressRepository.save(address);
         return AddressMapper.mapToCreateAddressDTO(newAddress);
+    }
+
+    public List<ResAddressDTO> getAddressByUserId(String id) throws IdInvalidException {
+        userService.fetchUserById(id);
+        List<Address> dbAddress = addressRepository.findByUserUserId(id);
+        return dbAddress.stream()
+                .map(AddressMapper::mapToAddressDTO)
+                .collect(Collectors.toList());
     }
 }
