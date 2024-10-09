@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE tool SET deleted = true WHERE tool_id = ?")
 public class Tool extends BaseEntity {
@@ -54,4 +54,8 @@ public class Tool extends BaseEntity {
 
     @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
     List<OrderTool> orderTools;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    User user;
 }

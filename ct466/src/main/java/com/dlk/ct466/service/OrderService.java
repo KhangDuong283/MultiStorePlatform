@@ -35,8 +35,6 @@ public class OrderService {
     private final UserService userService;
     private final PaymentMethodService paymentMethodService;
     private final AddressService addressService;
-    private final FilterParser filterParser;
-    private final FilterSpecificationConverter filterSpecificationConverter;
 
     public Order getOrderById(String id) throws IdInvalidException {
         return orderRepository.findById(id).orElseThrow(

@@ -99,11 +99,13 @@ public class AddressService {
         return AddressMapper.mapToCreateAddressDTO(newAddress);
     }
 
-    public List<ResAddressDTO> getAddressByUserId(String id) throws IdInvalidException {
+    public ResPaginationDTO getAddressByUserId(Pageable pageable,String id) throws IdInvalidException {
         userService.fetchUserById(id);
-        List<Address> dbAddress = addressRepository.findByUserUserId(id);
-        return dbAddress.stream()
-                .map(AddressMapper::mapToAddressDTO)
-                .collect(Collectors.toList());
+
+        FilterNode node = filterParser.parse("deleted=false and user.id='" + id + "'");
+        FilterSpecification<Address> spec = filterSpecificationConverter.convert(node);
+
+        Page<Address> pageAddress = addressRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageAddress, pageable, AddressMapper::mapToAddressDTO);
     }
 }

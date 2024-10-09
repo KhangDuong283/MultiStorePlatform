@@ -7,7 +7,9 @@ import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.response.order.ResCreateOrderDTO;
 import com.dlk.ct466.domain.response.order.ResOrderDTO;
 import com.dlk.ct466.domain.response.order.ResUpdateOrderDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderMapper {
     public static ResCreateOrderDTO mapToResCreateOrderDTO(Order order) {
         // Map User

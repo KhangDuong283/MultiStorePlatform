@@ -19,6 +19,5 @@ public interface AddressRepository extends JpaRepository<Address, String>,
     @Query("SELECT a FROM Address a WHERE a.addressId = :id AND a.deleted = false")
     Optional<Address> findByAddressIdNotDeleted(@Param("id") String id);
 
-    List<Address> findByUserUserId(String userId);
 
 }

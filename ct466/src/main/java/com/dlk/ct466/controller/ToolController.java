@@ -55,4 +55,25 @@ public class ToolController {
     ) {
         return ResponseEntity.ok(toolService.getAllTool(pageable));
     }
+
+    @GetMapping("/user-tools/{userId}")
+    @ApiMessage("Get tool owner by user")
+    public ResponseEntity<ResPaginationDTO> getByUserId(
+            Pageable pageable,
+            @PathVariable("userId") String id
+    ) throws IdInvalidException {
+        return ResponseEntity.ok(toolService.getToolByUserId(pageable, id));
+    }
+
+    @GetMapping("/type-tools/{typeId}")
+    @ApiMessage("Get tool by tool type id")
+    public ResponseEntity<ResPaginationDTO> getByToolTypeId(
+            Pageable pageable,
+            @PathVariable("typeId") long id
+    ) throws IdInvalidException {
+        return ResponseEntity.ok(toolService.getToolByTypeId(pageable, id));
+    }
+
+
+
 }

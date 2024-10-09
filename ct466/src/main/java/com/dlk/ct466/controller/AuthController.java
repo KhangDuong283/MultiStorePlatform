@@ -1,7 +1,7 @@
 package com.dlk.ct466.controller;
 
 import com.dlk.ct466.domain.entity.User;
-import com.dlk.ct466.domain.request.ReqLoginDTO;
+import com.dlk.ct466.domain.request.auth.ReqLoginDTO;
 import com.dlk.ct466.domain.response.auth.ResAuthDTO;
 import com.dlk.ct466.domain.response.auth.ResLoginDTO;
 import com.dlk.ct466.domain.response.user.ResCreateUserDTO;

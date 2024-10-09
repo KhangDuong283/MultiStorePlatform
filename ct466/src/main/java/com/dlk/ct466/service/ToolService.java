@@ -2,9 +2,11 @@ package com.dlk.ct466.service;
 
 import com.dlk.ct466.domain.entity.Tool;
 import com.dlk.ct466.domain.entity.ToolType;
+import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.repository.ToolRepository;
 import com.dlk.ct466.repository.ToolTypeRepository;
+import com.dlk.ct466.repository.UserRepository;
 import com.dlk.ct466.util.PaginationUtil;
 import com.dlk.ct466.util.error.IdInvalidException;
 import com.turkraft.springfilter.converter.FilterSpecification;
@@ -24,6 +26,9 @@ public class ToolService {
 
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final ToolTypeService toolTypeService;
 
     public Tool getToolById(long toolId) throws IdInvalidException {
         return toolRepository.findByIdIfNotDeleted(toolId).orElseThrow(
@@ -84,6 +89,24 @@ public class ToolService {
 
     public ResPaginationDTO getAllToolAdmin(Pageable pageable) {
         Page<Tool> pageTools = toolRepository.findAll(pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+    }
+
+    public ResPaginationDTO getToolByUserId(Pageable pageable, String id) throws IdInvalidException {
+        userService.fetchUserById(id);
+        FilterNode node = filterParser.parse("deleted=false and user.id='" + id + "'");
+        FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
+
+        Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+    }
+
+    public ResPaginationDTO getToolByTypeId(Pageable pageable, long id) throws IdInvalidException {
+        toolTypeService.getToolTypeById(id);
+        FilterNode node = filterParser.parse("deleted=false and toolType.id='" + id + "'");
+        FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
+
+        Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
         return PaginationUtil.getPaginatedResult(pageTools, pageable);
     }
 }

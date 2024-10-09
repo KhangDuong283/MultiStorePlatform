@@ -1,4 +1,4 @@
-package com.dlk.ct466.audit;
+package com.dlk.ct466.util.audit;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

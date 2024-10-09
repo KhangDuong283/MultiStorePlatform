@@ -40,15 +40,13 @@ public class GlobalException {
     // handle khi nhap du lieu sai (validate cu the duoc cau hinh ben trong entity)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> validateError(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
-        final List<FieldError> fieldErrors = result.getFieldErrors();
+        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
 
-        RestResponse<Object> res = new RestResponse<Object>();
+        RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(ex.getBody().getDetail());
-
-        List<String> errors = fieldErrors.stream().map(f -> f.getDefaultMessage())
-                .collect(Collectors.toList());
         res.setMessage(errors.size() > 1 ? errors : errors.get(0));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -75,5 +73,6 @@ public class GlobalException {
         res.setError("Invalid enum value provided");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
+
 
 }

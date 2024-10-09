@@ -1,4 +1,4 @@
-package com.dlk.ct466.domain.request;
+package com.dlk.ct466.domain.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
