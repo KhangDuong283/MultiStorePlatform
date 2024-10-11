@@ -53,4 +53,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Tool> tools;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
 }

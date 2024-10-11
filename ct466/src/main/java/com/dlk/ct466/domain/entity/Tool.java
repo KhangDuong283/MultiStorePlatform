@@ -31,7 +31,7 @@ public class Tool extends BaseEntity {
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Discounted price must be greater than 0")
+    @DecimalMin(value = "0.0", message = "Discounted price must be greater than 0")
     BigDecimal discountedPrice;
 
     int stockQuantity;
@@ -58,4 +58,7 @@ public class Tool extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
+
+    @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
+    List<CartTool> cartTools;
 }

@@ -1,7 +1,11 @@
 package com.dlk.ct466.controller;
 
 import com.dlk.ct466.domain.entity.Tool;
+import com.dlk.ct466.domain.request.tool.ReqToolDTO;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
+import com.dlk.ct466.domain.response.tool.ResCreateToolDTO;
+import com.dlk.ct466.domain.response.tool.ResToolDTO;
+import com.dlk.ct466.domain.response.tool.ResUpdateToolDTO;
 import com.dlk.ct466.service.ToolService;
 import com.dlk.ct466.util.annotation.ApiMessage;
 import com.dlk.ct466.util.error.IdInvalidException;
@@ -20,19 +24,19 @@ public class ToolController {
 
     @GetMapping("/{id}")
     @ApiMessage("Get tool by id")
-    public ResponseEntity<Tool> getById(@PathVariable("id") long id) throws IdInvalidException {
-        return ResponseEntity.ok(toolService.getToolById(id));
+    public ResponseEntity<ResToolDTO> getById(@PathVariable("id") long id) throws IdInvalidException {
+        return ResponseEntity.ok(toolService.getToolByIdDTO(id));
     }
 
     @PostMapping
     @ApiMessage("Create a tool")
-    public ResponseEntity<Tool> create(@Valid @RequestBody Tool tool) throws IdInvalidException {
+    public ResponseEntity<ResCreateToolDTO> create(@Valid @RequestBody ReqToolDTO tool) throws IdInvalidException {
         return ResponseEntity.status(HttpStatus.CREATED).body(toolService.createTool(tool));
     }
 
     @PutMapping("/{id}")
     @ApiMessage("Update a tool")
-    public ResponseEntity<Tool> update(@PathVariable("id") long id, @Valid @RequestBody Tool tool) throws IdInvalidException {
+    public ResponseEntity<ResUpdateToolDTO> update(@PathVariable("id") long id, @Valid @RequestBody ReqToolDTO tool) throws IdInvalidException {
         return ResponseEntity.ok(toolService.updateTool(tool, id));
     }
 

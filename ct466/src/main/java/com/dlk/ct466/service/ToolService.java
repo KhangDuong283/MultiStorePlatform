@@ -3,7 +3,12 @@ package com.dlk.ct466.service;
 import com.dlk.ct466.domain.entity.Tool;
 import com.dlk.ct466.domain.entity.ToolType;
 import com.dlk.ct466.domain.entity.User;
+import com.dlk.ct466.domain.mapper.ToolMapper;
+import com.dlk.ct466.domain.request.tool.ReqToolDTO;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
+import com.dlk.ct466.domain.response.tool.ResCreateToolDTO;
+import com.dlk.ct466.domain.response.tool.ResToolDTO;
+import com.dlk.ct466.domain.response.tool.ResUpdateToolDTO;
 import com.dlk.ct466.repository.ToolRepository;
 import com.dlk.ct466.repository.ToolTypeRepository;
 import com.dlk.ct466.repository.UserRepository;
@@ -36,32 +41,62 @@ public class ToolService {
         );
     }
 
+    public ResToolDTO getToolByIdDTO(long toolId) throws IdInvalidException {
+        Tool tool = toolRepository.findByIdIfNotDeleted(toolId).orElseThrow(
+                () -> new IdInvalidException("Tool with id: " + toolId + " not found")
+        );
+
+        return ToolMapper.mapToResToolDTO(tool);
+    }
+
+
+
     public Tool getToolByIdAdmin(long toolId) throws IdInvalidException {
         return toolRepository.findById(toolId).orElseThrow(
                 () -> new IdInvalidException("Tool with id: " + toolId + " not found")
         );
     }
 
-    public Tool createTool(Tool tool) throws IdInvalidException {
-        if (tool.getToolType() != null) {
-            long toolTypeId = tool.getToolType().getToolTypeId();
-            ToolType toolType = toolTypeRepository.findById(toolTypeId).orElseThrow(
-                    () -> new IdInvalidException("Tool type with id: " + toolTypeId + " not found")
-            );
-            tool.setToolType(toolType);
-        }
-        return toolRepository.save(tool);
+    public ResCreateToolDTO createTool(ReqToolDTO request) throws IdInvalidException {
+        User dbUser = userService.fetchUserById(request.getUser().getUserId());
+
+        ToolType dbToolType = toolTypeService.getToolTypeById(request.getToolType().getToolTypeId());
+
+        Tool tool = new Tool().toBuilder()
+                .user(dbUser)
+                .toolType(dbToolType)
+                .name(request.getName())
+                .description(request.getDescription())
+                .stockQuantity(request.getStockQuantity())
+                .imageUrl(request.getImageUrl())
+                .price(request.getPrice())
+                .discountedPrice(request.getDiscountedPrice())
+                .isActive(request.isActive())
+                .build();
+        Tool newTool = toolRepository.save(tool);
+        return ToolMapper.mapToResCreateToolDTO(newTool);
     }
 
-    public Tool updateTool(Tool tool, long id) throws IdInvalidException {
+    public ResUpdateToolDTO updateTool(ReqToolDTO request, long id) throws IdInvalidException {
+        User dbUser = userService.fetchUserById(request.getUser().getUserId());
+
+        ToolType dbToolType = toolTypeService.getToolTypeById(request.getToolType().getToolTypeId());
+
         Tool dbTool = getToolById(id);
-        dbTool.setName(tool.getName());
-        dbTool.setDescription(tool.getDescription());
-        dbTool.setPrice(tool.getPrice());
-        dbTool.setDiscountedPrice(tool.getDiscountedPrice());
-        dbTool.setStockQuantity(tool.getStockQuantity());
-        dbTool.setImageUrl(tool.getImageUrl());
-        return toolRepository.save(dbTool);
+
+        Tool tool = dbTool.toBuilder()
+                .user(dbUser)
+                .toolType(dbToolType)
+                .name(request.getName())
+                .description(request.getDescription())
+                .stockQuantity(request.getStockQuantity())
+                .imageUrl(request.getImageUrl())
+                .price(request.getPrice())
+                .discountedPrice(request.getDiscountedPrice())
+                .isActive(request.isActive())
+                .build();
+        Tool updatedTool = toolRepository.save(tool);
+        return ToolMapper.mapToResUpdateToolDTO(updatedTool);
     }
 
     public Void deleteTool(Long toolId) throws IdInvalidException {
@@ -84,12 +119,12 @@ public class ToolService {
         FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
 
         Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
-        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
     }
 
     public ResPaginationDTO getAllToolAdmin(Pageable pageable) {
         Page<Tool> pageTools = toolRepository.findAll(pageable);
-        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
     }
 
     public ResPaginationDTO getToolByUserId(Pageable pageable, String id) throws IdInvalidException {
@@ -98,7 +133,7 @@ public class ToolService {
         FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
 
         Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
-        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
     }
 
     public ResPaginationDTO getToolByTypeId(Pageable pageable, long id) throws IdInvalidException {
@@ -107,6 +142,6 @@ public class ToolService {
         FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
 
         Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
-        return PaginationUtil.getPaginatedResult(pageTools, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
     }
 }

@@ -6,8 +6,6 @@ import com.dlk.ct466.domain.response.orderTool.ResOrderToolDTO;
 import com.dlk.ct466.domain.response.orderTool.ResUpdateOrderToolDTO;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 @Component
 public class OrderToolMapper {
 
