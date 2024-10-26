@@ -27,6 +27,9 @@ public class Role extends BaseEntity {
     String description;
     boolean active;
 
+    @Column(nullable = false)
+    boolean deleted = false;
+
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
     List<RolePermission> rolePermissions;

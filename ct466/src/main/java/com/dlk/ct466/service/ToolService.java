@@ -27,11 +27,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ToolService {
     private final ToolRepository toolRepository;
-    private final ToolTypeRepository toolTypeRepository;
-
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final ToolTypeService toolTypeService;
 

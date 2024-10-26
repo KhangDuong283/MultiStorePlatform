@@ -32,6 +32,9 @@ public class Permission extends BaseEntity {
     @NotBlank(message = "Module not be blank")
     String module;
 
+    @Column(nullable = false)
+    boolean deleted = false;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "permission")
     @JsonIgnore
     List<RolePermission> rolePermissions;
