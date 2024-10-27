@@ -15,4 +15,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
 
     @Query("SELECT r FROM Role r WHERE r.roleId = :id AND r.deleted = false")
     Optional<Role> findByIdNotDeleted(@Param("id") long id);
+
+    Role findByName(String name);
 }

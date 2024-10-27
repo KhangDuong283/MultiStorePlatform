@@ -46,7 +46,8 @@ public class AuthService {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     dbUser.getUserId(),
                     dbUser.getEmail(),
-                    dbUser.getFullName()
+                    dbUser.getFullName(),
+                    dbUser.getRole()
             );
             res.setUser(userLogin);
         }
@@ -82,6 +83,8 @@ public class AuthService {
             userLogin.setId(dbUser.getUserId());
             userLogin.setEmail(dbUser.getEmail());
             userLogin.setFullName(dbUser.getFullName());
+            userLogin.setRole(dbUser.getRole());
+
             userGetAccount.setUser(userLogin);
         }
 
@@ -106,7 +109,8 @@ public class AuthService {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 dbUser.getUserId(),
                 dbUser.getEmail(),
-                dbUser.getFullName()
+                dbUser.getFullName(),
+                dbUser.getRole()
         );
         res.setUser(userLogin);
 

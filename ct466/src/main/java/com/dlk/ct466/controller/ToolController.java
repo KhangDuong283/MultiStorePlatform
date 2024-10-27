@@ -1,6 +1,5 @@
 package com.dlk.ct466.controller;
 
-import com.dlk.ct466.domain.entity.Tool;
 import com.dlk.ct466.domain.request.tool.ReqToolDTO;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.domain.response.tool.ResCreateToolDTO;
@@ -60,20 +59,20 @@ public class ToolController {
         return ResponseEntity.ok(toolService.getAllTool(pageable));
     }
 
-    @GetMapping("/user-tools/{userId}")
+    @GetMapping("/user-tools/{id}")
     @ApiMessage("Get tool owner by user")
     public ResponseEntity<ResPaginationDTO> getByUserId(
             Pageable pageable,
-            @PathVariable("userId") String id
+            @PathVariable("id") String id
     ) throws IdInvalidException {
         return ResponseEntity.ok(toolService.getToolByUserId(pageable, id));
     }
 
-    @GetMapping("/type-tools/{typeId}")
+    @GetMapping("/type-tools/{id}")
     @ApiMessage("Get tool by tool type id")
     public ResponseEntity<ResPaginationDTO> getByToolTypeId(
             Pageable pageable,
-            @PathVariable("typeId") long id
+            @PathVariable("id") long id
     ) throws IdInvalidException {
         return ResponseEntity.ok(toolService.getToolByTypeId(pageable, id));
     }

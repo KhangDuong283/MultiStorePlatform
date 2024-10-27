@@ -55,10 +55,10 @@ public class RolePermissionController {
         return ResponseEntity.ok(rolePermissionService.getAllRolePermissions(pageable));
     }
 
-    @GetMapping("/role-owner/{roleId}")
-    @ApiMessage("Get all permission of role")
+    @GetMapping("/role-owner/{id}")
+    @ApiMessage("Get role-permissions by roleId")
     public ResponseEntity<ResPaginationDTO> getPermissionOfRole(
-            @PathVariable("roleId") long id,
+            @PathVariable("id") long id,
             Pageable pageable
     ) {
         return ResponseEntity.ok(rolePermissionService.getPermissionsByRoleId(id, pageable));

@@ -86,6 +86,6 @@ public class RolePermissionService {
         FilterNode node = filterParser.parse("deleted=false and role.id=" + roleId);
         FilterSpecification<RolePermission> spec = filterSpecificationConverter.convert(node);
         Page<RolePermission> pageRolePermissions = rolePermissionRepository.findAll(spec, pageable);
-        return PaginationUtil.getPaginatedResult(pageRolePermissions, pageable, RolePermissionMapper::mapToResRolePermissionDTO);
+        return PaginationUtil.getPaginatedResult(pageRolePermissions, pageable, RolePermissionMapper::mapToResRoleOwnerDTO);
     }
 }

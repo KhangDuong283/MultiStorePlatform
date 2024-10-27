@@ -1,5 +1,6 @@
 package com.dlk.ct466.domain.response.auth;
 
+import com.dlk.ct466.domain.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ public class ResLoginDTO {
         String id;
         String email;
         String fullName;
+        Role role;
     }
 
     @Data

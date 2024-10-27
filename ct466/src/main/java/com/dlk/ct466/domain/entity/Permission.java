@@ -39,4 +39,10 @@ public class Permission extends BaseEntity {
     @JsonIgnore
     List<RolePermission> rolePermissions;
 
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
 }
