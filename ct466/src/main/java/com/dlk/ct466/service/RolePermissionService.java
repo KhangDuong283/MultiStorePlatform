@@ -5,6 +5,7 @@ import com.dlk.ct466.domain.entity.Role;
 import com.dlk.ct466.domain.entity.RolePermission;
 import com.dlk.ct466.domain.mapper.RolePermissionMapper;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
+import com.dlk.ct466.domain.response.rolePermission.ResRoleOwnerDTO;
 import com.dlk.ct466.domain.response.rolePermission.ResRolePermissionDTO;
 import com.dlk.ct466.repository.RolePermissionRepository;
 import com.dlk.ct466.util.PaginationUtil;
@@ -17,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,11 +85,22 @@ public class RolePermissionService {
         return PaginationUtil.getPaginatedResult(pageRolePermissions, pageable, RolePermissionMapper::mapToResRolePermissionDTO);
     }
 
-
-    public ResPaginationDTO getPermissionsByRoleId(long roleId, Pageable pageable) {
+    public ResPaginationDTO getPermissionsByRoleIdDTO(long roleId, Pageable pageable) {
         FilterNode node = filterParser.parse("deleted=false and role.id=" + roleId);
         FilterSpecification<RolePermission> spec = filterSpecificationConverter.convert(node);
         Page<RolePermission> pageRolePermissions = rolePermissionRepository.findAll(spec, pageable);
         return PaginationUtil.getPaginatedResult(pageRolePermissions, pageable, RolePermissionMapper::mapToResRoleOwnerDTO);
     }
+
+    public List<ResRoleOwnerDTO> getPermissionsByRoleId(long roleId) {
+        FilterNode node = filterParser.parse("deleted=false and role.id=" + roleId);
+        FilterSpecification<RolePermission> spec = filterSpecificationConverter.convert(node);
+
+        List<RolePermission> rolePermissions = rolePermissionRepository.findAll(spec);
+
+        return rolePermissions.stream()
+                .map(RolePermissionMapper::mapToResRoleOwnerDTO)
+                .collect(Collectors.toList());
+    }
+
 }

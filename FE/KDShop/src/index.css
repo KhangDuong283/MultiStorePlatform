@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.ant-menu-item-selected {
+    background-color: #ffffff33 !important; 
+}
+
+.ant-menu-title-content {
+    color: white !important; 
+    font-weight: bold;;
+
+}
+
+.ant-menu-item {
+    border-radius: 12% !important;
+
+}
+
+.ant-menu-item::after {
+    content: none !important;
+}
+
+.ant-menu-item:hover {
+    color: white !important; 
+    background-color: #ffffff33 !important; 
+    border-radius: 12% !important;
+}
+

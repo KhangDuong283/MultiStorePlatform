@@ -1,9 +1,12 @@
 package com.dlk.ct466.domain.response.auth;
 
+import com.dlk.ct466.domain.entity.Permission;
 import com.dlk.ct466.domain.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +25,17 @@ public class ResLoginDTO {
         String id;
         String email;
         String fullName;
-        Role role;
+        RoleInUserLogin role;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class RoleInUserLogin {
+        long id;
+        String name;
+        List<Permission> permissions;
     }
 
     @Data

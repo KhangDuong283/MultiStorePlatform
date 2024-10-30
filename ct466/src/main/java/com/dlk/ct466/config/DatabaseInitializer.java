@@ -35,21 +35,21 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (countPermissions == 0) {
             ArrayList<Permission> arr = new ArrayList<>();
-            arr.add(new Permission("Create a tool", "/api/v1/tools", "POST", "tools"));
-            arr.add(new Permission("Get a tool by id", "/api/v1/tools/{id}", "GET", "tools"));
-            arr.add(new Permission("Get tools with pagination", "/api/v1/tools", "GET", "tools"));
-            arr.add(new Permission("Get tools owner by user id", "/api/v1/tools/{id}", "GET", "tools"));
-            arr.add(new Permission("Get tools by type id", "/api/v1/tools/type-tools/{id}", "GET", "tools"));
-            arr.add(new Permission("Update a tool", "/api/v1/tools/{id}", "PUT", "tools"));
-            arr.add(new Permission("Delete a tool", "/api/v1/tools/{id}", "DELETE", "tools"));
-            arr.add(new Permission("Restore a tool", "/api/v1/tools/{id}", "PATCH", "tools"));
+            arr.add(new Permission("Create a tool", "/api/v1/tools", "POST", "TOOLS"));
+            arr.add(new Permission("Get a tool by id", "/api/v1/tools/{id}", "GET", "TOOLS"));
+            arr.add(new Permission("Get tools with pagination", "/api/v1/tools", "GET", "TOOLS"));
+            arr.add(new Permission("Get tools owner by user id", "/api/v1/tools/{id}", "GET", "TOOLS"));
+            arr.add(new Permission("Get tools by type id", "/api/v1/tools/type-tools/{id}", "GET", "TOOLS"));
+            arr.add(new Permission("Update a tool", "/api/v1/tools/{id}", "PUT", "TOOLS"));
+            arr.add(new Permission("Delete a tool", "/api/v1/tools/{id}", "DELETE", "TOOLS"));
+            arr.add(new Permission("Restore a tool", "/api/v1/tools/{id}", "PATCH", "TOOLS"));
 
-            arr.add(new Permission("Create a tooltypes", "/api/v1/tooltypes", "POST", "tooltypes"));
-            arr.add(new Permission("Update a tooltypes", "/api/v1/tooltypes/{id}", "PUT", "tooltypes"));
-            arr.add(new Permission("Delete a tooltypes", "/api/v1/tooltypes/{id}", "DELETE", "tooltypes"));
-            arr.add(new Permission("Get a tooltypes by id", "/api/v1/tooltypes/{id}", "GET", "tooltypes"));
-            arr.add(new Permission("Restore tooltypes by id", "/api/v1/tooltypes/{id}", "PATCH", "tooltypes"));
-            arr.add(new Permission("Get tooltypes with pagination", "/api/v1/tooltypes", "GET", "tooltypes"));
+            arr.add(new Permission("Create a tooltypes", "/api/v1/tooltypes", "POST", "TOOL_TYPES"));
+            arr.add(new Permission("Update a tooltypes", "/api/v1/tooltypes/{id}", "PUT", "TOOL_TYPES"));
+            arr.add(new Permission("Delete a tooltypes", "/api/v1/tooltypes/{id}", "DELETE", "TOOL_TYPES"));
+            arr.add(new Permission("Get a tooltypes by id", "/api/v1/tooltypes/{id}", "GET", "TOOL_TYPES"));
+            arr.add(new Permission("Restore tooltypes by id", "/api/v1/tooltypes/{id}", "PATCH", "TOOL_TYPES"));
+            arr.add(new Permission("Get tooltypes with pagination", "/api/v1/tooltypes", "GET", "TOOL_TYPES"));
 
             arr.add(new Permission("Create a permission", "/api/v1/permissions", "POST", "PERMISSIONS"));
             arr.add(new Permission("Get a permission by id", "/api/v1/permissions/{id}", "GET", "PERMISSIONS"));
@@ -65,15 +65,15 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Delete a role", "/api/v1/roles/{id}", "DELETE", "ROLES"));
             arr.add(new Permission("Restore a role", "/api/v1/roles/{id}", "PATCH", "ROLES"));
 
-            arr.add(new Permission("Create a role-permission", "/api/v1/roles-permissions", "POST", "ROLESPERMISSION"));
-            arr.add(new Permission("Get a roles-permissions by id", "/api/v1/roles-permissions/{id}", "GET", "ROLESPERMISSION"));
-            arr.add(new Permission("Get roles-permissions with pagination", "/api/v1/roles-permissions", "GET", "ROLESPERMISSION"));
+            arr.add(new Permission("Create a role-permission", "/api/v1/roles-permissions", "POST", "ROLE_PERMISSIONS"));
+            arr.add(new Permission("Get a roles-permissions by id", "/api/v1/roles-permissions/{id}", "GET", "ROLE_PERMISSIONS"));
+            arr.add(new Permission("Get roles-permissions with pagination", "/api/v1/roles-permissions", "GET", "ROLE_PERMISSIONS"));
             arr.add(new Permission("Get roles-permissions by roleID", "/api/v1/roles-permissions/role-owner/{id}",
                     "GET",
-                    "ROLESPERMISSION"));
-            arr.add(new Permission("Update a roles-permissions", "/api/v1/roles-permissions/{id}", "PUT", "ROLESPERMISSION"));
-            arr.add(new Permission("Delete a roles-permissions", "/api/v1/roles-permissions/{id}", "DELETE", "ROLESPERMISSION"));
-            arr.add(new Permission("Restore a roles-permissions", "/api/v1/roles-permissions/{id}", "PATCH", "ROLESPERMISSION"));
+                    "ROLE_PERMISSIONS"));
+            arr.add(new Permission("Update a roles-permissions", "/api/v1/roles-permissions/{id}", "PUT", "ROLE_PERMISSIONS"));
+            arr.add(new Permission("Delete a roles-permissions", "/api/v1/roles-permissions/{id}", "DELETE", "ROLE_PERMISSIONS"));
+            arr.add(new Permission("Restore a roles-permissions", "/api/v1/roles-permissions/{id}", "PATCH", "ROLE_PERMISSIONS"));
 
 
             arr.add(new Permission("Create a user", "/api/v1/users", "POST", "USERS"));
@@ -119,8 +119,21 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get account", "/api/v1/auth/account", "GET", "AUTH"));
             arr.add(new Permission("Refresh token", "/api/v1/auth/refresh", "GET", "AUTH"));
 
+//            arr.add(new Permission("Get cart by id", "/api/v1/carts/{id}", "GET", "CART"));
+//            arr.add(new Permission("Create a cart", "/api/v1/carts", "POST", "CART"));
+//            arr.add(new Permission("Update a cart", "/api/v1/carts/{id}", "PUT", "CART"));
+//            arr.add(new Permission("Get cart by user ID", "/api/v1/carts/user-cart/{id}", "GET", "CART"));
+//
+//            arr.add(new Permission("Get cart tool by ID", "/api/v1/cart-tools/{id}", "GET", "CART_TOOL"));
+//            arr.add(new Permission("Create a cart tool", "/api/v1/cart-tools", "POST", "CART_TOOL"));
+//            arr.add(new Permission("Update a cart tool", "/api/v1/cart-tools/{id}", "PUT", "CART_TOOL"));
+//            arr.add(new Permission("Get all cart tools", "/api/v1/cart-tools", "GET", "CART_TOOL"));
+
+
             arr.add(new Permission("Download a file", "/api/v1/files", "POST", "FILES"));
             arr.add(new Permission("Upload a file", "/api/v1/files", "GET", "FILES"));
+
+
 
             this.permissionRepository.saveAll(arr);
         }

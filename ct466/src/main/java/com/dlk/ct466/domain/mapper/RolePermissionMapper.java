@@ -42,7 +42,6 @@ public class RolePermissionMapper {
 
         // Tạo và trả về ResRolePermissionDTO
         return ResRoleOwnerDTO.builder()
-                .id(rolePermission.getId())
                 .permission(permission)
                 .build();
     }

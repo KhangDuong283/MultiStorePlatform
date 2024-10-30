@@ -1,7 +1,9 @@
 package com.dlk.ct466.service;
 
+import com.dlk.ct466.domain.entity.Permission;
 import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.request.auth.ReqLoginDTO;
+import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.domain.response.auth.ResAuthDTO;
 import com.dlk.ct466.domain.response.auth.ResLoginDTO;
 import com.dlk.ct466.domain.response.user.ResCreateUserDTO;
@@ -9,6 +11,8 @@ import com.dlk.ct466.util.SecurityUtil;
 import com.dlk.ct466.util.error.IdInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,12 +21,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
     private final SecurityUtil securityUtil;
+    private final RolePermissionService rolePermissionService;
 
     @Value("${dlk.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
@@ -43,11 +50,19 @@ public class AuthService {
 
         User dbUser = userService.findUserByEmail(loginDTO.getEmail());
         if (dbUser != null) {
+            Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+            ResPaginationDTO paginationDTO = rolePermissionService.getPermissionsByRoleIdDTO(dbUser.getRole().getRoleId(), pageable);
+            List<Permission> permissions = (List<Permission>) paginationDTO.getResult();
+            ResLoginDTO.RoleInUserLogin roleInUserLogin = new ResLoginDTO.RoleInUserLogin(
+                    dbUser.getRole().getRoleId(),
+                    dbUser.getRole().getName(),
+                    permissions
+            );
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     dbUser.getUserId(),
                     dbUser.getEmail(),
                     dbUser.getFullName(),
-                    dbUser.getRole()
+                    roleInUserLogin
             );
             res.setUser(userLogin);
         }
@@ -80,10 +95,19 @@ public class AuthService {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         ResLoginDTO.UserGetAccount userGetAccount = new ResLoginDTO.UserGetAccount();
         if (dbUser != null) {
+            Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+            ResPaginationDTO paginationDTO = rolePermissionService.getPermissionsByRoleIdDTO(dbUser.getRole().getRoleId(), pageable);
+            List<Permission> permissions = (List<Permission>) paginationDTO.getResult();
+            ResLoginDTO.RoleInUserLogin roleInUserLogin = new ResLoginDTO.RoleInUserLogin(
+                    dbUser.getRole().getRoleId(),
+                    dbUser.getRole().getName(),
+                    permissions
+            );
+
             userLogin.setId(dbUser.getUserId());
             userLogin.setEmail(dbUser.getEmail());
             userLogin.setFullName(dbUser.getFullName());
-            userLogin.setRole(dbUser.getRole());
+            userLogin.setRole(roleInUserLogin);
 
             userGetAccount.setUser(userLogin);
         }
@@ -106,11 +130,19 @@ public class AuthService {
         );
 
         ResLoginDTO res = new ResLoginDTO();
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        ResPaginationDTO paginationDTO = rolePermissionService.getPermissionsByRoleIdDTO(dbUser.getRole().getRoleId(), pageable);
+        List<Permission> permissions = (List<Permission>) paginationDTO.getResult();
+        ResLoginDTO.RoleInUserLogin roleInUserLogin = new ResLoginDTO.RoleInUserLogin(
+                dbUser.getRole().getRoleId(),
+                dbUser.getRole().getName(),
+                permissions
+        );
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 dbUser.getUserId(),
                 dbUser.getEmail(),
                 dbUser.getFullName(),
-                dbUser.getRole()
+                roleInUserLogin
         );
         res.setUser(userLogin);
 
@@ -154,6 +186,10 @@ public class AuthService {
         return userService.createUser(user);
     }
 
+    public Boolean checkEmail(String email) {
+        User userDb = userService.findUserByEmail(email);
+        return userDb != null;
+    }
 }
 
 

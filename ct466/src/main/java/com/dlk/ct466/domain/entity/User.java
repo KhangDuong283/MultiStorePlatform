@@ -58,4 +58,8 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    Cart cart;
 }

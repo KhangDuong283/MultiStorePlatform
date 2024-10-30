@@ -1,7 +1,5 @@
 package com.dlk.ct466.config;
-import com.dlk.ct466.domain.entity.Permission;
 import com.dlk.ct466.domain.entity.Role;
-import com.dlk.ct466.domain.entity.RolePermission;
 import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.domain.response.rolePermission.ResRoleOwnerDTO;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -64,7 +61,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
                 }
 
                 Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-                ResPaginationDTO paginationDTO = rolePermissionService.getPermissionsByRoleId(roleId, pageable);
+                ResPaginationDTO paginationDTO = rolePermissionService.getPermissionsByRoleIdDTO(roleId, pageable);
                 List<ResRoleOwnerDTO> resPermissionDTOList = (List<ResRoleOwnerDTO>) paginationDTO.getResult();
 
                 boolean isAllow = resPermissionDTOList.stream().anyMatch(

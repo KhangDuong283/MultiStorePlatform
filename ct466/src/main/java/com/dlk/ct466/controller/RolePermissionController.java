@@ -61,6 +61,6 @@ public class RolePermissionController {
             @PathVariable("id") long id,
             Pageable pageable
     ) {
-        return ResponseEntity.ok(rolePermissionService.getPermissionsByRoleId(id, pageable));
+        return ResponseEntity.ok(rolePermissionService.getPermissionsByRoleIdDTO(id, pageable));
     }
 }

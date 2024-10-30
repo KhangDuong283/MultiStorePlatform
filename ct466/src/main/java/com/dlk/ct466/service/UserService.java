@@ -1,5 +1,6 @@
 package com.dlk.ct466.service;
 
+import com.dlk.ct466.domain.entity.Role;
 import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.domain.mapper.UserMapper;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
@@ -28,6 +29,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final FilterParser filterParser;
     private final FilterSpecificationConverter filterSpecificationConverter;
+    private final RoleService roleService;
+    private final UserMapper userMapper;
 
     public User fetchUserById(String id) throws IdInvalidException {
         return userRepository.findByIdIfNotDeleted(id).orElseThrow(
@@ -66,8 +69,17 @@ public class UserService {
         String  hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
 
+        if (user.getRole() == null || user.getRole().getRoleId() == 0) {
+            Role buyerRole = roleService.fetchById(2);
+            user.setRole(buyerRole);
+        } else {
+            Role userRole = roleService.fetchById(user.getRole().getRoleId());
+            user.setRole(userRole);
+        }
+
+
         User newUser = userRepository.save(user);
-        return UserMapper.mapToCreateUserDTO(newUser);
+        return userMapper.mapToCreateUserDTO(newUser);
     }
 
     public ResUpdateUserDTO updateUser(User user, String id) throws IdInvalidException {

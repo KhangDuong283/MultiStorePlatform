@@ -62,4 +62,10 @@ public class AuthController {
                 .body(resAuthDTO.getResLoginDTO());
     }
 
+    @GetMapping("/check-email/{email}")
+    @ApiMessage("Check email")
+    public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
+        return ResponseEntity.ok(authService.checkEmail(email));
+    }
+
 }

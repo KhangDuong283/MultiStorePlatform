@@ -1,9 +1,12 @@
 package com.dlk.ct466.domain.response.user;
 
+import com.dlk.ct466.domain.entity.Permission;
+import com.dlk.ct466.domain.response.rolePermission.ResRoleOwnerDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +22,15 @@ public class ResCreateUserDTO {
     String imageUrl;
     Instant createdAt;
     String createdBy;
+    RoleInCreateUser role;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class RoleInCreateUser {
+        long id;
+        String name;
+        List<ResRoleOwnerDTO> permissions;
+    }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete(sql = "UPDATE tool SET deleted = true WHERE tool_id = ?")
+@SQLDelete(sql = "UPDATE tools SET deleted = true WHERE tool_id = ?")
 public class Tool extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
