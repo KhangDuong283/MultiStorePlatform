@@ -62,11 +62,11 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getAllAddress(pageable));
     }
 
-    @GetMapping("/user-address/{userId}")
+    @GetMapping("/user-address/{id}")
     @ApiMessage("Get user address by user ID")
     public ResponseEntity<ResPaginationDTO> getUserAddress(
             Pageable pageable,
-            @PathVariable("userId") String userId
+            @PathVariable("id") String userId
     ) throws IdInvalidException {
         return ResponseEntity.ok(addressService.getAddressByUserId(pageable, userId));
     }

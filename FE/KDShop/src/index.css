@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* Custom focus menu-item trên header antd */
 .ant-menu-item-selected {
     background-color: #ffffff33 !important; 
 }
@@ -27,4 +27,28 @@
     background-color: #ffffff33 !important; 
     border-radius: 12% !important;
 }
+/* ****************************************************** */
+
+/* Loại bỏ viền focus của header antd*/
+.ant-menu-item:focus,
+.ant-menu-item:focus-visible,
+.ant-menu-submenu-title:focus,
+.ant-menu-submenu-title:focus-visible {
+    outline: none; 
+}
+/* ****************************************************** */
+
+
+/* Cố định header */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+.layout-content {
+    padding-top: 70px;
+}
+/* ****************************************************** */
 

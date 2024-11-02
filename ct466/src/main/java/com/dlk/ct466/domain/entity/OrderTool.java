@@ -2,6 +2,7 @@
 package com.dlk.ct466.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class OrderTool extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+            @JsonIgnore
     Order order;
 
     @ManyToOne

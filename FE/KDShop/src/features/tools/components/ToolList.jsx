@@ -12,7 +12,7 @@ const ToolList = () => {
         return <div className="text-red-500 text-center">Đã xảy ra lỗi: {error.message}</div>;
     }
 
-    const products = tools?.data?.result || [];
+    const products = tools?.result || [];
 
     if (products.length === 0) {
         return <div className="text-center">Không có sản phẩm nào.</div>;
@@ -20,10 +20,9 @@ const ToolList = () => {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {/* hỏi xem có cần thêm products?.map không */}
-            {/* {products.map((tool) => (
-                <ToolItem key={tool.id} tool={tool} />
-            ))} */}
+            {products.map((tool) => (
+                <ToolItem key={tool.toolId} tool={tool} />
+            ))}
         </div>
     );
 };

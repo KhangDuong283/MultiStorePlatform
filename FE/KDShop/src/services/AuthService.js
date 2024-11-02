@@ -5,7 +5,11 @@ export const login = (email, password) => {
 }
 
 export const getAccount = () => {
-    return axios.get(`/api/v1/auth/account`);
+    const path = `/api/v1/auth/account`;
+    const res = axios.get(path);
+    // console.log(res);
+    return res;
+
 }
 
 export const checkEmailExists = async (email) => {

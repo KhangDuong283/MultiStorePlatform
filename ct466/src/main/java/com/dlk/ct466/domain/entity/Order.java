@@ -1,6 +1,7 @@
 package com.dlk.ct466.domain.entity;
 
 import com.dlk.ct466.util.constant.OrderStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

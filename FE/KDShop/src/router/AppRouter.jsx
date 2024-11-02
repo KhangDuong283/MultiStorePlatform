@@ -16,6 +16,9 @@ import { fetchAccount } from "../redux/slices/accountSlice";
 import AdminHome from "../pages/AdminHome";
 import SellerHome from "../pages/SellerHome";
 import ProtectedRoute from "../utils/ProtectRoute";
+import Cart from "../pages/Cart";
+import CheckoutPage from "../pages/Checkout";
+import OrderHistoryPage from "../pages/OrderHistoryPage";
 
 const router = createBrowserRouter([
     {
@@ -35,6 +38,18 @@ const router = createBrowserRouter([
             {
                 path: "courses",
                 element: <CourseList />,
+            },
+            {
+                path: "cart",
+                element: <Cart />,
+            },
+            {
+                path: "checkout",
+                element: <CheckoutPage />,
+            },
+            {
+                path: "order-history",
+                element: <OrderHistoryPage />,
             }
         ]
     },

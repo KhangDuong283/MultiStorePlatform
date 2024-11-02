@@ -1,5 +1,6 @@
 package com.dlk.ct466.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +21,10 @@ public class Cart extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     User user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<CartTool> cartTools;
 }

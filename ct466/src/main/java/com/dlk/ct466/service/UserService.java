@@ -1,9 +1,12 @@
 package com.dlk.ct466.service;
 
+import com.dlk.ct466.domain.entity.Cart;
 import com.dlk.ct466.domain.entity.Role;
 import com.dlk.ct466.domain.entity.User;
+import com.dlk.ct466.domain.mapper.CartMapper;
 import com.dlk.ct466.domain.mapper.UserMapper;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
+import com.dlk.ct466.domain.response.cart.ResCartDTO;
 import com.dlk.ct466.domain.response.user.ResCreateUserDTO;
 import com.dlk.ct466.domain.response.user.ResUpdateUserDTO;
 import com.dlk.ct466.domain.response.user.ResUserDTO;
@@ -31,6 +34,8 @@ public class UserService {
     private final FilterSpecificationConverter filterSpecificationConverter;
     private final RoleService roleService;
     private final UserMapper userMapper;
+    private final CartService cartService;
+    private final CartMapper cartMapper;
 
     public User fetchUserById(String id) throws IdInvalidException {
         return userRepository.findByIdIfNotDeleted(id).orElseThrow(
@@ -78,7 +83,15 @@ public class UserService {
         }
 
 
+
         User newUser = userRepository.save(user);
+
+        // tạo cart
+        Cart newCart = new Cart();
+        newCart.setUser(newUser);
+        ResCartDTO cart = cartService.createCart(newCart);
+        Cart cartUser = cartMapper.toCart(cart);
+        user.setCart(cartUser);
         return userMapper.mapToCreateUserDTO(newUser);
     }
 

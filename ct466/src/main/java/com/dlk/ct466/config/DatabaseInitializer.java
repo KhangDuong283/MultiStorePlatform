@@ -105,7 +105,8 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Restore an address", "/api/v1/addresses/{id}", "PATCH", "ADDRESSES"));
             arr.add(new Permission("Get an address by ID", "/api/v1/addresses/{id}", "GET", "ADDRESSES"));
             arr.add(new Permission("Get all addresses with pagination", "/api/v1/addresses", "GET", "ADDRESSES"));
-            arr.add(new Permission("Get addresses by user ID with pagination", "/api/v1/addresses/user-address/{userId}", "GET", "ADDRESSES"));
+            arr.add(new Permission("Get addresses by user ID with pagination", "/api/v1/addresses/user-address/{id}",
+                    "GET", "ADDRESSES"));
 
             arr.add(new Permission("Get order tool by ID", "/api/v1/ordertools/{id}", "GET", "ORDER_TOOL"));
             arr.add(new Permission("Create an order tool", "/api/v1/ordertools", "POST", "ORDER_TOOL"));

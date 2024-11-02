@@ -14,4 +14,6 @@ public interface CartRepository extends JpaRepository<Cart, String>,
         JpaSpecificationExecutor<Cart> {
     @Query("SELECT c FROM Cart c WHERE c.user.userId = :userId")
     Optional<Cart> findByUserUserId(@Param("userId") String userId);
+
+    boolean existsByUserUserId(String userId);
 }

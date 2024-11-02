@@ -3,10 +3,10 @@ import accountReducer from "./slices/accountSlice";
 
 
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     account: accountReducer
   },
 });
 
-export default store;
+

@@ -35,9 +35,24 @@ public class CartToolController {
         return ResponseEntity.ok(cartToolService.updateCartTool(id, cartTool));
     }
 
-    @GetMapping
-    @ApiMessage("Get all cart tools")
-    public ResponseEntity<ResPaginationDTO> getAllCartTools(Pageable pageable) {
-        return ResponseEntity.ok(cartToolService.getAllCartTools(pageable));
+    @GetMapping("/tool-of-cart/{id}")
+    @ApiMessage("Get all cart tools by Cart ID")
+    public ResponseEntity<ResPaginationDTO> getAllCartTools(Pageable pageable, @PathVariable("id") String id) throws IdInvalidException {
+        return ResponseEntity.ok(cartToolService.getAllCartTools(pageable, id));
     }
+
+    @DeleteMapping("/{id}")
+    @ApiMessage("Hard delete cart tool by ID")
+    public ResponseEntity<Void> deleteCartTool(@PathVariable("id") long cartToolId) throws IdInvalidException {
+        cartToolService.deleteCartTool(cartToolId);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/isExist")
+    @ApiMessage("Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa")
+    //    Trả về cartToolId
+    public ResponseEntity<Long> isExist(@RequestBody CartTool cartTool) {
+        return ResponseEntity.ok(cartToolService.isExist(cartTool));
+    }
+
 }

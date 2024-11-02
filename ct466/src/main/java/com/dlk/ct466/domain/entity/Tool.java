@@ -1,5 +1,6 @@
 package com.dlk.ct466.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -53,12 +54,15 @@ public class Tool extends BaseEntity {
     ToolType toolType;
 
     @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
+            @JsonIgnore
     List<OrderTool> orderTools;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     User user;
 
     @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<CartTool> cartTools;
 }

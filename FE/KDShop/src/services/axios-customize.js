@@ -1,6 +1,6 @@
 import { Mutex } from "async-mutex";
 import axios from "axios";
-import store from "../redux/store";
+import { store } from "../redux/store";
 import { setRefreshTokenAction } from "../redux/slices/accountSlice";
 import { notification } from "antd";
 
