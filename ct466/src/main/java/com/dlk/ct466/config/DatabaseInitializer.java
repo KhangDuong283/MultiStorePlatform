@@ -1,18 +1,14 @@
 package com.dlk.ct466.config;
 
-import com.dlk.ct466.domain.entity.Permission;
-import com.dlk.ct466.domain.entity.Role;
-import com.dlk.ct466.domain.entity.RolePermission;
-import com.dlk.ct466.domain.entity.User;
-import com.dlk.ct466.repository.PermissionRepository;
-import com.dlk.ct466.repository.RolePermissionRepository;
-import com.dlk.ct466.repository.RoleRepository;
-import com.dlk.ct466.repository.UserRepository;
+import com.dlk.ct466.domain.entity.*;
+import com.dlk.ct466.repository.*;
+import com.dlk.ct466.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +20,10 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ToolTypeRepository toolTypeRepository;
+    private final ToolRepository toolRepository;
+    private final UserService userService;
+    private final PaymentMethodRepository paymentMethodRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,6 +31,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         long countPermissions = permissionRepository.count();
         long countRoles = roleRepository.count();
         long countUsers = userRepository.count();
+        long countToolTypes = toolTypeRepository.count();
+        long countTools = toolRepository.count();
+        long countPaymentMethod = paymentMethodRepository.count();
 
 
         if (countPermissions == 0) {
@@ -134,47 +137,259 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Download a file", "/api/v1/files", "POST", "FILES"));
             arr.add(new Permission("Upload a file", "/api/v1/files", "GET", "FILES"));
 
-
-
             this.permissionRepository.saveAll(arr);
         }
 
         if (countRoles == 0) {
-            List<Permission> allPermissions = this.permissionRepository.findAll();
+            // tạo Role SUPER_ADMIN
+            // lấy tất cả permissions
+            List<Permission> allPermissions = permissionRepository.findAll();
 
+            // tạo role mới SUPER_ADMIN id = 1
             Role adminRole = new Role();
             adminRole.setName("SUPER_ADMIN");
             adminRole.setDescription("Super Admin có tất cả permissions");
-            adminRole.setActive(true);
+            Role savedRoleAdmin = roleRepository.save(adminRole);
 
-            Role savedRole = roleRepository.save(adminRole);
-
+            // gán tất cả permissions cho role SUPER_ADMIN
             List<RolePermission> rolePermissions = new ArrayList<>();
             for (Permission permission : allPermissions) {
                 RolePermission rolePermission = new RolePermission();
-                rolePermission.setRole(savedRole);
+                rolePermission.setRole(savedRoleAdmin);
                 rolePermission.setPermission(permission);
                 rolePermissions.add(rolePermission);
             }
+            rolePermissionRepository.saveAll(rolePermissions);
 
-            this.rolePermissionRepository.saveAll(rolePermissions);
+            // tạo Role SELLER
+            // lấy 1 số permission cho role SELLER
+            List<Permission> sellerPermissions = List.of(
+                    permissionRepository.findByName("Create a tool"),
+                    permissionRepository.findByName("Update a tool"),
+                    permissionRepository.findByName("Delete a tool"),
+                    permissionRepository.findByName("Get tools with pagination"),
+                    permissionRepository.findByName("Get a tool by id"),
+                    permissionRepository.findByName("Get orders by user ID"),
+                    permissionRepository.findByName("Create an order"),
+                    permissionRepository.findByName("Update an order"),
+                    permissionRepository.findByName("Get all orders with pagination"),
+                    permissionRepository.findByName("Get orders by status"),
+                    permissionRepository.findByName("Restore a tool")
+            );
+            Role sellerRole = new Role();
+            sellerRole.setName("SELLER");
+            sellerRole.setDescription("Seller có quyền quản lý sản phẩm");
+            Role savedRoleSeller = roleRepository.save(sellerRole);
+
+            List<RolePermission> rolePermissionsSeller = new ArrayList<>();
+            for (Permission permission : sellerPermissions) {
+                RolePermission rolePermission = new RolePermission();
+                rolePermission.setRole(savedRoleSeller);
+                rolePermission.setPermission(permission);
+                rolePermissionsSeller.add(rolePermission);
+            }
+            rolePermissionRepository.saveAll(rolePermissionsSeller);
+
+            // tạo Role BUYER
+            // lấy 1 số permission cho role BUYER
+            List<Permission> buyerPermissions = List.of(
+                    permissionRepository.findByName("Get tools with pagination"),
+                    permissionRepository.findByName("Get a tool by id"),
+                    permissionRepository.findByName("Create an order"),
+                    permissionRepository.findByName("Update an order"),
+                    permissionRepository.findByName("Get all orders with pagination"),
+                    permissionRepository.findByName("Get orders by user ID"),
+                    permissionRepository.findByName("Get orders by status"),
+                    permissionRepository.findByName("Get an order by ID"),
+                    permissionRepository.findByName("Restore a tool")
+            );
+            Role buyerRole = new Role();
+            buyerRole.setName("BUYER");
+            buyerRole.setDescription("Buyer có quyền mua hàng");
+            Role savedRoleBuyer = roleRepository.save(buyerRole);
+
+            List<RolePermission> rolePermissionsBuyer = new ArrayList<>();
+            for (Permission permission : buyerPermissions) {
+                RolePermission rolePermission = new RolePermission();
+                rolePermission.setRole(savedRoleBuyer);
+                rolePermission.setPermission(permission);
+                rolePermissionsBuyer.add(rolePermission);
+            }
+            rolePermissionRepository.saveAll(rolePermissionsBuyer);
+
         }
 
         if (countUsers == 0) {
+            // tạo user với role SUPER_ADMIN
             User adminUser = new User();
             adminUser.setEmail("admin@gmail.com");
             adminUser.setFullName("I'm super admin");
-            adminUser.setPassword(this.passwordEncoder.encode("123456"));
+            adminUser.setPassword("123456");
+            adminUser.setImageUrl("default.png");
 
             Role adminRole = this.roleRepository.findByName("SUPER_ADMIN");
             if (adminRole != null) {
                 adminUser.setRole(adminRole);
             }
+            userService.createUser(adminUser);
 
-            this.userRepository.save(adminUser);
+            // tạo user với role SELLER
+            User sellerUser = new User();
+            sellerUser.setEmail("seller@gmail.com");
+            sellerUser.setFullName("I'm seller");
+            sellerUser.setPassword("123456");
+            sellerUser.setImageUrl("default.png");
+
+            Role sellerRole = this.roleRepository.findByName("SELLER");
+            if (sellerRole != null) {
+                sellerUser.setRole(sellerRole);
+            }
+            userService.createUser(sellerUser);
+
+            // tạo user với role BUYER1
+            User buyerUser1 = new User();
+            buyerUser1.setEmail("buyer1@gmail.com");
+            buyerUser1.setFullName("I'm buyer 1");
+            buyerUser1.setPassword("123456");
+            buyerUser1.setImageUrl("default.png");
+
+            Role buyerRole1 = this.roleRepository.findByName("BUYER");
+            if (buyerRole1 != null) {
+                buyerUser1.setRole(buyerRole1);
+            }
+            userService.createUser(buyerUser1);
+
+            // tạo user với role BUYER2
+            User buyerUser2 = new User();
+            buyerUser2.setEmail("buyer2@gmail.com");
+            buyerUser2.setFullName("I'm buyer 2");
+            buyerUser2.setPassword("123456");
+            buyerUser2.setImageUrl("default.png");
+
+            Role buyerRole2 = this.roleRepository.findByName("BUYER");
+            if (buyerRole2 != null) {
+                buyerUser2.setRole(buyerRole2);
+            }
+            userService.createUser(buyerUser2);
         }
 
-        if (countPermissions > 0 && countRoles > 0 && countUsers > 0) {
+        if (countToolTypes == 0) {
+            // Khởi tạo ToolType
+            List<ToolType> toolTypes = new ArrayList<>();
+            ToolType type1 = ToolType.builder().name("Bút cánh diều").build();
+            ToolType type2 = ToolType.builder().name("Giấy").build();
+            ToolType type3 = ToolType.builder().name("Mực").build();
+
+            toolTypes.add(type1);
+            toolTypes.add(type2);
+            toolTypes.add(type3);
+            toolTypeRepository.saveAll(toolTypes);
+        }
+
+        if (toolRepository.count() == 0) {
+            User user = userRepository.findByEmail("admin@gmail.com").orElse(null);
+            // Khởi tạo Tool
+            List<Tool> tools = new ArrayList<>();
+
+            tools.add(Tool.builder()
+                    .name("Bút Jinhao TIANDAO 1935\n")
+                    .description("Bút dành cho tín đồ thích bút to. \n")
+                    .price(new BigDecimal("180000"))
+                    .discountedPrice(new BigDecimal("169000"))
+                    .stockQuantity(100)
+                    .imageUrl("but1.png")
+                    .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .user(user)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("BÚT BI OHTO CELSUS CERAMIC 0.5MM CB-15C\n")
+                    .description("Một lựa chọn hoàn hảo cho ai đang tìm bút bi ký.\n" +
+                            "\n⭐  Xuất xứ : Nhật Bản\n" +
+                            "\n" +
+                            "⚡\uFE0F  Hãng sản xuất : OHTO\n" +
+                            "\n" +
+                            "OHTO là một hãng bút đã hơn 100 tuổi với thế mạnh là sản xuất bút bi nên những cây bút bi của OHTO gấy ấn tượng mạnh với người tiêu dùng.\n" +
+                            "\n" +
+                            "⭐  Bút bi dạng nước sử dụng gốm cho đầu bút bi. Bề mặt bi không trơn nhẵn mà có vô số các lỗ nhỏ, mực sẽ bám vào các lỗ này giúp nét viết ra liên tục và mượt mà.\n" +
+                            "\n" +
+                            " \n" +
+                            "\n" +
+                            "⭐  Thân bút bằng kim loại có độ bóng và tạo ra cảm giác sang trọng, \"đầm tay\" khi viết.")
+                    .price(new BigDecimal("550000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .stockQuantity(50)
+                    .imageUrl("but2.png")
+                    .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .user(user)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("Giấy hoa Xa Trục Thảo - Set Happy School - 2.5mm - 12 tờ A4 không lem\n")
+                    .description("- Giấy A4 định lượng 100 có phụ gia chống thấm đảm bảo không lem và có độ bền cao trong môi trường ẩm.\n" +
+                            "\n" +
+                            "- Màu kem chụp ăn ảnh, cho ra màu trắng thuần.\n" +
+                            "\n" +
+                            "- Ô li 2.5mm tương tự vở học sinh.\n" +
+                            "\n" +
+                            "- In màu offset 1 mặt siêu rõ nét và lên ảnh rực rỡ, 12 tờ là 12 mẫu khác nhau, chủ đề thầy trò xinh xắn.\n" +
+                            "\n" +
+                            "- Đường kẻ màu xanh nhạt viết nổi chữ.\n" +
+                            "\n" +
+                            "- Để lẻ tờ, dễ viết, dễ chụp ảnh, dễ chọn lọc và đưa vào bộ sưu tập.\n" +
+                            "\n" +
+                            "- Mua 5 set tặng thêm 1 set.\n" +
+                            "\n" +
+                            "Sản phẩm do Xa Trục Thảo thiết kế và in ấn, phân phối bởi Cánh Diều.")
+                    .price(new BigDecimal("20000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .stockQuantity(200)
+                    .imageUrl("giay1.png")
+                    .toolType(toolTypeRepository.findById(2L).orElse(null))
+                    .user(user)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("Mực Pilot Iroshizuku 50ml - màu mới")
+                    .description("Pilot ra mắt 3 màu mực bút máy Iroshizuku mới vào năm 2022. Những loại mực tuyệt đẹp này được lấy cảm hứng từ môi trường tươi đẹp của Nhật Bản. \n" +
+                            "\n" +
+                            "1. Hana-ikada (花筏) - Bè hoa anh đào Nhật Bản: lấy cảm hứng từ những bông hoa anh đào xinh đẹp, trôi bồng bềnh trên dòng sông đang chảy.\n" +
+                            "\n" +
+                            "2. Hotaru-bi (蛍火) - Ánh sáng đom đóm: lấy cảm hứng từ ánh sáng dịu nhẹ của những chú đom đóm mỏng manh. Màu này là một màu xanh lá cây tươi sáng với màu vàng ấm áp.\n" +
+                            "\n" +
+                            "3. Sui-gyoku (翠玉) - Ngọc lục bảo: lấy cảm hứng từ ánh sáng xanh lục đậm của một loại đá quý ngọc lục bảo vô cùng quý giá.")
+                    .price(new BigDecimal("440000"))
+                    .discountedPrice(new BigDecimal("419000"))
+                    .stockQuantity(30)
+                    .imageUrl("muc1.png")
+                    .toolType(toolTypeRepository.findById(3L).orElse(null))
+                    .user(user)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("Bút mài Cánh Diều 303 - thân nhám mới\n")
+                    .description("Đây là cây bút máy ngòi mài với nét mảnh và êm. Nét mảnh của mẫu 303 mảnh hơn mẫu " +
+                            "301 nhưng không mảnh bằng mẫu 302 (êm hơn mẫu 302). Thân bút vừa với cả bàn tay người lớn và học sinh. Bút phù hợp với người đã có kỹ thuật viết bút mài tốt.S")
+                    .price(new BigDecimal("90000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .stockQuantity(25)
+                    .imageUrl("but3.png")
+                    .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .user(user)
+                    .build());
+
+            toolRepository.saveAll(tools);
+        }
+
+        if (countPaymentMethod == 0) {
+            List<PaymentMethod> paymentMethods = new ArrayList<>();
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán khi nhận hàng").build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua thẻ ngân hàng").build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua VN PAY").build());
+            paymentMethodRepository.saveAll(paymentMethods);
+        }
+
+        if (countPermissions > 0 && countRoles > 0 && countUsers > 0 && countToolTypes > 0 && countTools > 0 && countPaymentMethod > 0) {
             System.out.println(">>> SKIP INIT DATABASE ~ ALREADY HAVE DATA...");
         } else
             System.out.println(">>> END INIT DATABASE");

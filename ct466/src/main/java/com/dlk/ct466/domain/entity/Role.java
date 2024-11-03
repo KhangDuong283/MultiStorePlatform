@@ -25,7 +25,7 @@ public class Role extends BaseEntity {
     String name;
 
     String description;
-    boolean active;
+    boolean active = true;
 
     @Column(nullable = false)
     boolean deleted = false;

@@ -31,6 +31,9 @@ public class SecurityConfiguration {
             "/api/v1/courses/**",
             "/api/v1/carts/**",
             "/api/v1/cart-tools/**",
+            "/resources/**",
+            "/api/v1/files/**"
+
     };
 
     @Bean

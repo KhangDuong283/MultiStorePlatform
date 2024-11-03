@@ -9,6 +9,7 @@ import com.dlk.ct466.repository.UserRepository;
 import com.dlk.ct466.util.error.IdInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class CartService {
         return cartMapper.toCartDTO(dbCart);
     }
 
+    @Transactional
     public ResCartDTO createCart(Cart cart) throws IdInvalidException {
         if (cart.getUser() == null || cart.getUser().getUserId() == null) {
             throw new IdInvalidException("User cannot be null or empty");

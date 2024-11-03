@@ -3,9 +3,6 @@ package com.dlk.ct466.util.error;
 import com.dlk.ct466.domain.response.RestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +68,17 @@ public class GlobalException {
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setMessage(ex.getMessage());
         res.setError("Invalid enum value provided");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(value = {
+            StorageException.class
+    })
+    public ResponseEntity<RestResponse<Object>> handleUploadException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setMessage(ex.getMessage());
+        res.setError("Exception upload file...");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 

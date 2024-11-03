@@ -54,7 +54,7 @@ public class Tool extends BaseEntity {
     ToolType toolType;
 
     @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
-            @JsonIgnore
+    @JsonIgnore
     List<OrderTool> orderTools;
 
     @ManyToOne
@@ -65,4 +65,9 @@ public class Tool extends BaseEntity {
     @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY)
     @JsonIgnore
     List<CartTool> cartTools;
+
+    @OneToMany(mappedBy = "tool", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<ImageTool> imageTools;
+
 }

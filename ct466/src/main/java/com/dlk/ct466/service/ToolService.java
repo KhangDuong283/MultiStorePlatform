@@ -10,8 +10,6 @@ import com.dlk.ct466.domain.response.tool.ResCreateToolDTO;
 import com.dlk.ct466.domain.response.tool.ResToolDTO;
 import com.dlk.ct466.domain.response.tool.ResUpdateToolDTO;
 import com.dlk.ct466.repository.ToolRepository;
-import com.dlk.ct466.repository.ToolTypeRepository;
-import com.dlk.ct466.repository.UserRepository;
 import com.dlk.ct466.util.PaginationUtil;
 import com.dlk.ct466.util.error.IdInvalidException;
 import com.turkraft.springfilter.converter.FilterSpecification;

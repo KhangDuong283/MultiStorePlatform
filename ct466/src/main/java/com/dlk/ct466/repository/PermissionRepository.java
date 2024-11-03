@@ -15,4 +15,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long>,
 
     @Query("SELECT p FROM Permission p WHERE p.permissionId = :id AND p.deleted = false")
     Optional<Permission> findByIdNotDeleted(@Param("id") long id);
+
+    Permission findByName(String name);
 }
