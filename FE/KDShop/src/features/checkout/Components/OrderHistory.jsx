@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // components/OrderHistory.jsx
-import { List, Card, Typography, Tag, Collapse, Button, message, Select, Spin } from 'antd';
+import { List, Card, Typography, Tag, Collapse, Button, message, Select } from 'antd';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useGetOrderByUserId } from '../hooks/useGetOrderByUserId';
@@ -29,14 +28,10 @@ const OrderHistory = () => {
     };
 
     // Hàm cập nhật chi tiết đơn hàng thêm thuộc tính của tool
-    // do API lấy chi tiết đơn hàng có chứa tool mà 
-    // chỉ trả về toolId mà không có price nên giờ phải cực vầy đây
     const fetchOrderItems = async () => {
         const allOrderItems = {};
         for (const order of orders) {
-            // lấy ra chi tiết 1 order 
             const orderDetail = await getOrderToolByOrderId(order.orderId);
-            // dựa vào toolid để lấy ra thông tin tool và cập nhật 
             const fetchedItems = await Promise.all(
                 orderDetail.map(async (item) => {
                     item.tool = await getToolByToolId(item.tool.toolId);
@@ -92,7 +87,11 @@ const OrderHistory = () => {
 
             {isLoading || loadingOrderItems || isLoadingTool ? (
                 <div className="flex justify-center items-center">
-                    <Spin tip="Đang tải dữ liệu..." />
+                    Đang tải dữ liệu...
+                </div>
+            ) : orders.length === 0 ? ( // Kiểm tra nếu không có đơn hàng
+                <div className="flex justify-center items-center">
+                    <Text className="text-gray-500">Bạn chưa có đơn hàng nào.</Text>
                 </div>
             ) : (
                 <List
@@ -176,6 +175,5 @@ const getStatusColor = (status) => {
         default: return 'default';
     }
 };
-
 
 export default OrderHistory;

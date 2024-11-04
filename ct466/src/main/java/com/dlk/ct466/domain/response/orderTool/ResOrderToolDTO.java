@@ -1,5 +1,9 @@
 package com.dlk.ct466.domain.response.orderTool;
 
+import com.dlk.ct466.domain.entity.Address;
+import com.dlk.ct466.domain.entity.PaymentMethod;
+import com.dlk.ct466.domain.entity.User;
+import com.dlk.ct466.util.constant.OrderStatusEnum;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,6 +32,11 @@ public class ResOrderToolDTO {
     public static class ToolInOrderTool {
         long toolId;
         String name;
+        BigDecimal price;
+        BigDecimal discountedPrice;
+        String description;
+        String imageUrl;
+        int stockQuantity;
     }
 
     @Data
@@ -36,5 +45,9 @@ public class ResOrderToolDTO {
     public static class OrderInOrderTool {
         String orderId;
         BigDecimal shippingCost;
+        OrderStatusEnum status;
+        PaymentMethod paymentMethod;
+        User user;
+        Address address;
     }
 }

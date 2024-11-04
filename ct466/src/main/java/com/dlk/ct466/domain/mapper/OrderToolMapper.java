@@ -51,10 +51,20 @@ public class OrderToolMapper {
         ResOrderToolDTO.ToolInOrderTool tool = new ResOrderToolDTO.ToolInOrderTool();
         tool.setToolId(orderTool.getTool().getToolId());
         tool.setName(orderTool.getTool().getName());
+        tool.setPrice(orderTool.getTool().getPrice());
+        tool.setDiscountedPrice(orderTool.getTool().getDiscountedPrice());
+        tool.setDescription(orderTool.getTool().getDescription());
+        tool.setImageUrl(orderTool.getTool().getImageUrl());
+        tool.setStockQuantity(orderTool.getTool().getStockQuantity());
+
 
         ResOrderToolDTO.OrderInOrderTool order = new ResOrderToolDTO.OrderInOrderTool();
         order.setOrderId(orderTool.getOrder().getOrderId());
         order.setShippingCost(orderTool.getOrder().getShippingCost());
+        order.setStatus(orderTool.getOrder().getStatus());
+        order.setPaymentMethod(orderTool.getOrder().getPaymentMethod());
+        order.setUser(orderTool.getOrder().getUser());
+        order.setAddress(orderTool.getOrder().getAddress());
 
         return ResOrderToolDTO.builder()
                 .orderToolId(orderTool.getOrderToolId())

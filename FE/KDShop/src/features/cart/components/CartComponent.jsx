@@ -18,7 +18,7 @@ const CartComponent = () => {
     const userId = useSelector(state => state?.account?.user?.id);
     const { carts } = useCart(userId);
     const { cartTools } = useCartTool(carts?.cartId);
-    // console.log(cartTools);
+    console.log(cartTools);
 
     useEffect(() => {
         if (cartTools?.result) {

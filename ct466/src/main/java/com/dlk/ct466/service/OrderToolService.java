@@ -130,4 +130,14 @@ public class OrderToolService {
         Page<OrderTool> pageOrderTool = orderToolRepository.findAll(spec, pageable);
         return PaginationUtil.getPaginatedResult(pageOrderTool, pageable, OrderToolMapper::mapToOrderToolDTO);
     }
+
+    public ResPaginationDTO getOrderToolsByToolId(Pageable pageable, long toolId) throws IdInvalidException {
+        toolService.getToolById(toolId);
+
+        FilterNode node = filterParser.parse("tool.id=" + toolId);
+        FilterSpecification<OrderTool> spec = filterSpecificationConverter.convert(node);
+
+        Page<OrderTool> pageOrderTool = orderToolRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageOrderTool, pageable, OrderToolMapper::mapToOrderToolDTO);
+    }
 }

@@ -8,7 +8,7 @@ const images = [
 
 const ImageSlider = () => {
     return (
-        <div className="m-6 mb-4 mb-0 bg-gray-100 rounded-lg shadow-md">
+        <div className="m-4 mb-4 mb-0 bg-gray-100 rounded-lg shadow-md">
             <Carousel autoplay draggable>
                 {images.map((image, index) => (
                     <div key={index}>

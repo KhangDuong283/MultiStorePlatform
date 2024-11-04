@@ -51,4 +51,11 @@ public class OrderToolController {
     public ResponseEntity<ResPaginationDTO> getOrderToolsByOrderId(Pageable pageable, @PathVariable("orderId") String orderId) throws IdInvalidException {
         return ResponseEntity.ok(orderToolService.getOrderToolsByOrderId(pageable, orderId));
     }
+
+    @GetMapping("/tool/{toolId}")
+    @ApiMessage("Get order tools by order ID")
+    public ResponseEntity<ResPaginationDTO> getOrderToolsByToolId(Pageable pageable,
+                                                               @PathVariable("toolId")  long toolId) throws IdInvalidException {
+        return ResponseEntity.ok(orderToolService.getOrderToolsByToolId(pageable, toolId));
+    }
 }

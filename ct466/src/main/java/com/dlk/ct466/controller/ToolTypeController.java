@@ -49,8 +49,8 @@ public class ToolTypeController {
     }
 
     @GetMapping
-    @ApiMessage("Get all tools")
-    public ResponseEntity<ResPaginationDTO> getAllTool(
+    @ApiMessage("Get all tooltypes")
+    public ResponseEntity<ResPaginationDTO> getAllToolType(
             Pageable pageable
     ) {
         return ResponseEntity.ok(toolTypeService.getAllToolType(pageable));

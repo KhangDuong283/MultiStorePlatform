@@ -5,21 +5,25 @@ import SellerLayout from "../layouts/SellerLayout";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import Auth from "../pages/Auth";
-import ToolList from "../features/tools/components/ToolList";
 import LoginForm from "../features/auth/components/LoginForm";
 import RegisterForm from "../features/auth/components/RegisterForm";
 import ForgotPasswordForm from "../features/auth/components/ForgotPasswordForm";
 import CourseList from "../features/courses/components/CourseList";
+import ProductDetailPage from "../pages/ProductDetailPage";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchAccount } from "../redux/slices/accountSlice";
 import AdminHome from "../pages/AdminHome";
-import SellerHome from "../pages/SellerHome";
 import ProtectedRoute from "../utils/ProtectRoute";
 import Cart from "../pages/Cart";
 import CheckoutPage from "../pages/Checkout";
 import OrderHistoryPage from "../pages/OrderHistoryPage";
-
+import ToolPage from "../pages/ToolPage";
+import SellerHome from "../pages/SellerHome"
+import ProductManagement from "../features/seller/components/ProductManagement";
+import OrderManagement from "../features/seller/components/OrderManagement";
+import CourseManagement from "../features/seller/components/CourseManagement";
+import Statistics from "../features/seller/components/Statistics";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -33,7 +37,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "products",
-                element: <ToolList />,
+                element: <ToolPage />,
             },
             {
                 path: "courses",
@@ -50,37 +54,62 @@ const router = createBrowserRouter([
             {
                 path: "order-history",
                 element: <OrderHistoryPage />,
+            },
+            {
+                path: "tool/:toolId",
+                element: <ProductDetailPage />,
             }
         ]
     },
     {
         path: "/admin",
-        element: <AdminLayout />,
+        element:
+            <ProtectedRoute role="SUPER_ADMIN">
+                <AdminLayout />
+            </ProtectedRoute>
+        ,
         errorElement: <NotFound />,
         children: [
             {
                 index: true,
                 path: "admin-home",
                 element:
-                    <ProtectedRoute role="SUPER_ADMIN">
-                        <AdminHome />,
-                    </ProtectedRoute>
+                    <AdminHome />,
             }
         ]
     },
     {
         path: "/seller",
-        element: <SellerLayout />,
+        element:
+            <ProtectedRoute role="SELLER">
+                <SellerLayout />
+            </ProtectedRoute>
+        ,
         errorElement: <NotFound />,
         children: [
             {
                 index: true,
-                path: "seller-home",
+                path: "",
                 element:
-                    <ProtectedRoute role="SELLER">
-                        <SellerHome />,
-                    </ProtectedRoute>
+                    <SellerHome />,
+            },
+            {
+                path: "products",
+                element: <ProductManagement />
+            },
+            {
+                path: "orders",
+                element: <OrderManagement />
+            },
+            {
+                path: "courses",
+                element: <CourseManagement />,
+            },
+            {
+                path: "statistics",
+                element: <Statistics />,
             }
+
         ]
     },
     {

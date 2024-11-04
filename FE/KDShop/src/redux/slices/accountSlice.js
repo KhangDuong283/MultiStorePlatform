@@ -37,9 +37,8 @@ export const accountSlice = createSlice({
             state.user.id = action?.payload?.id;
             state.user.email = action.payload.email;
             state.user.fullName = action.payload.fullName;
-            state.user.role = action?.payload?.role;
+            state.user.role = action.payload.role;
 
-            if (!action?.payload?.user?.role) state.user.role = {};
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
         },
         setLogoutUser: (state) => {
@@ -79,8 +78,7 @@ export const accountSlice = createSlice({
                 state.user.id = action?.payload?.user?.id;
                 state.user.email = action.payload.user?.email;
                 state.user.fullName = action.payload.user?.fullName;
-                state.user.role = action?.payload?.user?.role;
-                if (!action?.payload?.user?.role) state.user.role = {};
+                state.user.role = action.payload.user?.role;
                 state.user.role.permissions = action?.payload?.user?.role?.permissions ?? [];
             }
         })

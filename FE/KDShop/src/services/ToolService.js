@@ -7,15 +7,20 @@ export const readTools = async () => {
 
 export const createTool = async (newTool) => {
   const res = await axios.post(`/api/v1/tools`, newTool);
+  console.log("Request create gửi đi");
+  console.log(newTool);
   return res?.data;
 }
 
-export const updateTool = async (toolId, updatedTool) => {
+export const callUpdateTool = async (toolId, updatedTool) => {
   const res = await axios.put(`/api/v1/tools/${toolId}`, updatedTool);
+  console.log("Request update gửi đi");
+  console.log(updatedTool);
+
   return res?.data;
 }
 
-export const deleteTool = async (toolId) => {
+export const callDeleteTool = async (toolId) => {
   const res = await axios.delete(`/api/v1/tools/${toolId}`);
   return res?.data;
 }
@@ -31,4 +36,10 @@ export const callGetToolByToolId = async (id) => {
   const path = `/api/v1/tools/${id}`;
   const res = await axios.get(path);
   return res?.data;
+}
+
+export const callGetAllToolByUserId = async (id) => {
+  const path = `/api/v1/tools/user-tools/${id}`;
+  const res = await axios.get(path);
+  return res?.data?.result;
 }

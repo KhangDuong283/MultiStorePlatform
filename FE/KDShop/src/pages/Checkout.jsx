@@ -97,7 +97,6 @@ const CheckoutPage = () => {
 
                     <CheckoutSummary
                         totalAmount={totalAmount}
-                        selectedItemsLength={selectedItems.length}
                         shipCost={shipCost}
                     />
 

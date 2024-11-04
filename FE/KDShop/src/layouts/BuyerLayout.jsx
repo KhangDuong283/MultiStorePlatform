@@ -6,9 +6,9 @@ const BuyerLayout = () => {
 
     return (
         <CartProvider>
-            <Layout >
+            <Layout style={{ minHeight: "100vh" }}>
                 <HeaderComponent />
-                <div className="layout-content ">
+                <div className="layout-content">
                     <Outlet />
                 </div>
             </Layout>

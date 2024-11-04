@@ -52,3 +52,6 @@
 }
 /* ****************************************************** */
 
+:where(.css-dev-only-do-not-override-ni1kz0).ant-card .ant-card-body {
+    padding: 0.8rem;
+}

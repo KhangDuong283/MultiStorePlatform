@@ -1,4 +1,4 @@
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, Typography, Space } from 'antd';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const { Title } = Typography;
@@ -12,10 +12,10 @@ const onFinishFailed = (errorInfo) => {
 };
 
 const RegisterForm = () => {
-    const navigate = useNavigate(); // Khởi tạo useNavigate để điều hướng
+    const navigate = useNavigate();
 
     const handleLoginRedirect = () => {
-        navigate('/auth/login'); // Chuyển đến trang đăng nhập
+        navigate('/auth/login');
     };
 
     return (
@@ -32,7 +32,7 @@ const RegisterForm = () => {
                     span: 24,
                 }}
                 style={{
-                    maxWidth: 800, // Tăng chiều rộng tối đa của form
+                    maxWidth: 800,
                 }}
                 initialValues={{
                     remember: true,
@@ -43,7 +43,7 @@ const RegisterForm = () => {
             >
                 <Form.Item
                     label="Email"
-                    name="email"  // Trường cho email
+                    name="email"
                     rules={[
                         {
                             required: true,
@@ -71,9 +71,8 @@ const RegisterForm = () => {
                     <Input />
                 </Form.Item>
 
-                {/* Đặt hai trường Mật khẩu và Nhập lại mật khẩu trên cùng một hàng */}
                 <Form.Item label="Mật khẩu" wrapperCol={{ span: 24 }}>
-                    <Input.Group compact>
+                    <Space.Compact>
                         <Form.Item
                             name="password"
                             rules={[
@@ -107,7 +106,7 @@ const RegisterForm = () => {
                         >
                             <Input.Password placeholder="Nhập lại mật khẩu" />
                         </Form.Item>
-                    </Input.Group>
+                    </Space.Compact>
                 </Form.Item>
 
                 <Form.Item

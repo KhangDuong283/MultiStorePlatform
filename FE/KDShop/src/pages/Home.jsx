@@ -9,9 +9,8 @@ const Home = () => {
         <>
             <ImageSlider />
 
-
             <CardContainer>
-                <SectionTitle>Công cụ bán chạy</SectionTitle>
+                <SectionTitle>Sản phẩm bán chạy</SectionTitle>
                 <ToolList />
             </CardContainer>
 

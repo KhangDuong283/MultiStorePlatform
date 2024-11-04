@@ -8,10 +8,10 @@ export const ALL_PERMISSIONS = {
     },
     TOOLS: {
         CREATE: { method: "POST", apiPath: '/api/v1/tools', module: "TOOLS" },
-        GET_BY_ID: { method: "GET", apiPath: '/api/v1/tools/{id}', module: "TOOLS" },
-        GET_PAGINATE: { method: "GET", apiPath: '/api/v1/tools', module: "TOOLS" },
-        GET_OWNER: { method: "GET", apiPath: '/api/v1/tools/{id}', module: "TOOLS" },
-        GET_BY_TYPE_ID: { method: "GET", apiPath: '/api/v1/tools/type-tools/{id}', module: "TOOLS" },
+        GET_BY_ID: { method: "GET", apiPath: '/api/v1/tools/{id}', module: "TOOLS" }, // cho guest user
+        GET_PAGINATE: { method: "GET", apiPath: '/api/v1/tools', module: "TOOLS" }, // cho guest user
+        GET_OWNER: { method: "GET", apiPath: '/api/v1/tools/{id}', module: "TOOLS" }, // cho guest user
+        GET_BY_TYPE_ID: { method: "GET", apiPath: '/api/v1/tools/type-tools/{id}', module: "TOOLS" }, // cho guest user
         UPDATE: { method: "PUT", apiPath: '/api/v1/tools/{id}', module: "TOOLS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/tools/{id}', module: "TOOLS" },
         RESTORE: { method: "PATCH", apiPath: '/api/v1/tools/{id}', module: "TOOLS" },
@@ -83,7 +83,7 @@ export const ALL_PERMISSIONS = {
         GET_BY_ORDER_ID: { method: "GET", apiPath: '/api/v1/ordertools/order/{orderId}', module: "ORDER_TOOL" },
         UPDATE: { method: "PUT", apiPath: '/api/v1/ordertools/{orderToolId}', module: "ORDER_TOOL" },
     },
-    AUTH: {
+    AUTH: { // cho guest user
         LOGIN: { method: "POST", apiPath: '/api/v1/auth/login', module: "AUTH" },
         LOGOUT: { method: "POST", apiPath: '/api/v1/auth/logout', module: "AUTH" },
         REGISTER: { method: "POST", apiPath: '/api/v1/auth/register', module: "AUTH" },

@@ -164,17 +164,24 @@ public class DatabaseInitializer implements CommandLineRunner {
             // tạo Role SELLER
             // lấy 1 số permission cho role SELLER
             List<Permission> sellerPermissions = List.of(
-                    permissionRepository.findByName("Create a tool"),
-                    permissionRepository.findByName("Update a tool"),
-                    permissionRepository.findByName("Delete a tool"),
-                    permissionRepository.findByName("Get tools with pagination"),
-                    permissionRepository.findByName("Get a tool by id"),
+//                    permissionRepository.findByName("Create a tool"),
+//                    permissionRepository.findByName("Update a tool"),
+//                    permissionRepository.findByName("Delete a tool"),
+//                    permissionRepository.findByName("Get tools with pagination"),
+//                    permissionRepository.findByName("Get a tool by id"),
                     permissionRepository.findByName("Get orders by user ID"),
                     permissionRepository.findByName("Create an order"),
                     permissionRepository.findByName("Update an order"),
                     permissionRepository.findByName("Get all orders with pagination"),
                     permissionRepository.findByName("Get orders by status"),
-                    permissionRepository.findByName("Restore a tool")
+//                    permissionRepository.findByName("Restore a tool"),
+                    permissionRepository.findByName("Get a user by id"),
+                    permissionRepository.findByName("Create a tooltypes"),
+                    permissionRepository.findByName("Update a tooltypes"),
+                    permissionRepository.findByName("Delete a tooltypes"),
+                    permissionRepository.findByName("Get a tooltypes by id"),
+                    permissionRepository.findByName("Restore tooltypes by id"),
+                    permissionRepository.findByName("Get tooltypes with pagination")
             );
             Role sellerRole = new Role();
             sellerRole.setName("SELLER");
@@ -201,7 +208,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     permissionRepository.findByName("Get orders by user ID"),
                     permissionRepository.findByName("Get orders by status"),
                     permissionRepository.findByName("Get an order by ID"),
-                    permissionRepository.findByName("Restore a tool")
+                    permissionRepository.findByName("Restore a tool"),
+                    permissionRepository.findByName("Get a user by id")
             );
             Role buyerRole = new Role();
             buyerRole.setName("BUYER");
@@ -287,7 +295,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
 
         if (toolRepository.count() == 0) {
-            User user = userRepository.findByEmail("admin@gmail.com").orElse(null);
+            User user = userRepository.findByEmail("seller@gmail.com").orElse(null);
             // Khởi tạo Tool
             List<Tool> tools = new ArrayList<>();
 
@@ -299,6 +307,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .stockQuantity(100)
                     .imageUrl("but1.png")
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
                     .user(user)
                     .build());
 
@@ -321,6 +331,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .stockQuantity(50)
                     .imageUrl("but2.png")
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
                     .user(user)
                     .build());
 
@@ -346,6 +358,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .stockQuantity(200)
                     .imageUrl("giay1.png")
                     .toolType(toolTypeRepository.findById(2L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
                     .user(user)
                     .build());
 
@@ -363,6 +377,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .stockQuantity(30)
                     .imageUrl("muc1.png")
                     .toolType(toolTypeRepository.findById(3L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
                     .user(user)
                     .build());
 
@@ -375,6 +391,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .stockQuantity(25)
                     .imageUrl("but3.png")
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
                     .user(user)
                     .build());
 
@@ -383,9 +401,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (countPaymentMethod == 0) {
             List<PaymentMethod> paymentMethods = new ArrayList<>();
-            paymentMethods.add(PaymentMethod.builder().name("Thanh toán khi nhận hàng").build());
-            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua thẻ ngân hàng").build());
-            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua VN PAY").build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán khi nhận hàng").isActive(true).build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua thẻ ngân hàng").isActive(true).build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua VN PAY").isActive(true).build());
             paymentMethodRepository.saveAll(paymentMethods);
         }
 

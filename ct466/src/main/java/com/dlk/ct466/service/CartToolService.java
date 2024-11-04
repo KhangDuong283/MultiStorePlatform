@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -36,6 +37,7 @@ public class CartToolService {
                 () -> new IdInvalidException("CartTool with id: " + id + " not found"));
     }
 
+    @Transactional
     public CartTool createCartTool(CartTool cartTool) throws IdInvalidException {
         if (cartTool.getCart() == null || cartTool.getCart().getCartId() == null) {
             throw new IdInvalidException("Cart ID cannot be null");
@@ -80,7 +82,7 @@ public class CartToolService {
         return 0;
     }
 
-
+    @Transactional
     public CartTool updateCartTool(long id, CartTool cartTool) throws IdInvalidException {
         CartTool dbCartTool = getCartToolById(id);
 
