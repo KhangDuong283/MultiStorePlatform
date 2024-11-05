@@ -1,37 +1,39 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useGetAllToolByUserId } from "../hooks/useGetAllToolByUserId";
 import { useUniqueOrderIds } from "../hooks/useUniqueOrderIds";
 import { useGetOrderToolByOrderId } from "../../checkout/hooks/useGetOrderToolByOrderId";
 import { Button } from "antd";
-import CardContainer from "../../../components/CardContainer";
+import { useUpdateOrder } from "../hooks/useUpdateOrder";
+
 const OrderManagement = () => {
     const userId = useSelector(state => state?.account?.user?.id);
-    // lấy ra các sản phẩm của chủ shop
+
+    // Lấy ra các sản phẩm của chủ shop
     const { tools } = useGetAllToolByUserId(userId);
 
-    // lấy ra orderId đã mua sản phẩm của chủ shop
+    // Lấy ra các orderId đã mua sản phẩm của chủ shop
     const uniqueOrderIds = useUniqueOrderIds(tools);
 
-    // hàm lấy ra các sản phẩm của 1 order 
+    // Hàm lấy ra các sản phẩm của 1 order
     const { getOrderToolByOrderId } = useGetOrderToolByOrderId();
 
     const [ordersWithTools, setOrdersWithTools] = useState({});
-    console.log(Object.entries(ordersWithTools));
+    const [expandedOrders, setExpandedOrders] = useState({});
+
     useEffect(() => {
         const fetchOrderTools = async () => {
             const result = {};
 
             for (const orderId of uniqueOrderIds) {
-                // lấy ra các sản phẩm của order
+                // Lấy ra các sản phẩm của order
                 const orderTools = await getOrderToolByOrderId(orderId);
 
-
-                // Lọc các sản phảm có trong danh sách sản phẩm của chủ shop
+                // Lọc các sản phẩm có trong danh sách sản phẩm của chủ shop
                 const filteredTools = orderTools?.filter(orderTool =>
                     tools.some(tool => tool.toolId === orderTool.tool.toolId)
                 );
-
 
                 // Thêm danh sách tool vào đối tượng theo từng orderId
                 if (filteredTools?.length > 0) {
@@ -47,15 +49,136 @@ const OrderManagement = () => {
         }
     }, [uniqueOrderIds, tools, getOrderToolByOrderId]);
 
-    // Hàm duyệt đơn hàng (tạm thời chỉ là placeholder)
-    const handleApproveOrder = (orderId, orderStatus) => {
-        console.log(`Duyệt đơn hàng với ID: ${orderId}`);
-        // Thực hiện hành động duyệt đơn hàng ở đây (ví dụ: gọi API để cập nhật trạng thái đơn hàng)
+    // Hàm toggle để hiển thị chi tiết đơn hàng
+    const handleToggleOrderDetails = (orderId) => {
+        // console.log(expandedOrders);
+        setExpandedOrders(prev => ({
+            ...prev,
+            [orderId]: !prev[orderId],
+        }));
     };
+
+    // Các hàm xử lý trạng thái đơn hàng
+    const getOrderStatusButton = (orderStatus) => {
+        switch (orderStatus) {
+            case "PENDING":
+                return "Duyệt đơn hàng";
+            case "CONFIRMED":
+                return "Giao cho Shipper";
+            case "SHIPPED":
+                return "Đang giao hàng";
+            case "DELIVERED":
+                return "Giao hàng thành công";
+            case "RETURN_REQUESTED":
+                return "Chấp nhận yêu cầu trả hàng";
+            case "CANCELLED":
+                return "Đơn hàng đã hủy";
+            default:
+                return "Trạng thái không xác định";
+        }
+    };
+
+    const getOrderStatusTitle = (orderStatus) => {
+        switch (orderStatus) {
+            case "PENDING":
+                return "Đơn hàng đang chờ duyệt";
+            case "CONFIRMED":
+                return "Bạn đã xác nhận đơn hàng hãy chuẩn bị hàng và giao cho Shipper";
+            case "SHIPPED":
+                return "Đơn hàng đang được giao";
+            case "DELIVERED":
+                return "Đơn hàng đã được giao thành công";
+            case "RETURN_REQUESTED":
+                return "Khách hàng yêu cầu trả hàng đang chờ chấp nhận";
+            case "CANCELLED":
+                return "Đơn hàng đã bị hủy bởi khách hàng";
+            case "RETURNED":
+                return "Đơn hàng đã được trả hàng";
+            default:
+                return "Trạng thái không xác định";
+        }
+    };
+
+    const getOrderStatusButtonClass = (orderStatus) => {
+        switch (orderStatus) {
+            case "PENDING":
+                return "bg-yellow-500 hover:bg-yellow-600";
+            case "CONFIRMED":
+                return "bg-blue-500 hover:bg-blue-600";
+            case "SHIPPED":
+                return "bg-orange-500 hover:bg-orange-600";
+            case "DELIVERED":
+                return "bg-green-500 hover:bg-green-600";
+            case "RETURN_REQUESTED":
+                return "bg-purple-500 hover:bg-purple-600";
+            case "CANCELLED":
+                return "bg-gray-400 cursor-not-allowed";
+            default:
+                return "bg-gray-500";
+        }
+    };
+
+    const { updateOrder } = useUpdateOrder();
+
+    const handleApproveOrder = (orderId, orderTools) => {
+        const currentStatus = orderTools[0].order.status;
+        let newStatus = "";
+        if (currentStatus === "PENDING") {
+            newStatus = "CONFIRMED";
+        } else if (currentStatus === "CONFIRMED") {
+            newStatus = "SHIPPED";
+        } else if (currentStatus === "SHIPPED") {
+            newStatus = "DELIVERED";
+        } else if (currentStatus === "RETURN_REQUESTED") {
+            newStatus = "RETURNED";
+        }
+
+        const orderUpdate = {
+            status: newStatus,
+            shippingCost: orderTools[0].order.shippingCost,
+            user: {
+                userId: orderTools[0].order.user.userId
+            },
+            paymentMethod: {
+                paymentMethodId: orderTools[0].order.paymentMethod.paymentMethodId
+            },
+            address: {
+                addressId: orderTools[0].order.address.addressId
+            }
+        };
+
+        updateOrder({ orderId, orderUpdate });
+
+        // Cập nhật trạng thái thủ công trong UI
+        setOrdersWithTools(prevOrder => ({
+            ...prevOrder,
+            [orderId]: prevOrder[orderId].map(orderTool => ({
+                ...orderTool,
+                order: { ...orderTool.order, status: newStatus }
+            }))
+        }));
+    };
+
+    // Tính tổng doanh thu chỉ cho các đơn hàng có trạng thái DELIVERED
+    const totalRevenue = Object.entries(ordersWithTools).reduce((total, [orderId, orderTools]) => {
+        const orderStatus = orderTools[0].order.status; // Lấy trạng thái của đơn hàng
+        if (orderStatus === "DELIVERED") { // Chỉ tính nếu trạng thái là DELIVERED
+            const orderTotal = orderTools.reduce((total, orderTool) => {
+                const price = orderTool.tool.discountedPrice || orderTool.tool.price;
+                return total + orderTool.quantity * price;
+            }, 0);
+            return total + orderTotal;
+        }
+        return total;
+    }, 0);
 
     return (
         <div>
             <h1 className="text-2xl font-semibold mb-4 text-center">Quản lý đơn hàng</h1>
+
+            <h2 className="text-xl font-semibold mb-4 text-center">
+                Tổng doanh thu: <span className="text-red-500">{totalRevenue.toLocaleString()}đ</span>
+            </h2>
 
             {Object.entries(ordersWithTools).map(([orderId, orderTools]) => {
                 const totalAmount = orderTools.reduce((total, orderTool) => {
@@ -67,48 +190,51 @@ const OrderManagement = () => {
 
                 return (
                     <div key={orderId} className="mb-6 p-4 border border-gray-300 rounded-lg shadow-md bg-white">
-                        <h2 className="text-xl font-semibold">Đơn hàng: {orderId}</h2>
+                        <h2 className="text-xl font-semibold flex justify-between items-center">
+                            Đơn hàng: {orderId}
+                            <Button onClick={() => handleToggleOrderDetails(orderId)} className="ml-2">
+                                {expandedOrders[orderId] ? "Ẩn chi tiết" : "Xem chi tiết"}
+                            </Button>
+                        </h2>
                         <p><strong>Người mua:</strong> {orderTools[0].order.user.fullName}</p>
                         <p><strong>Ngày tạo:</strong> {new Date(orderTools[0].createdAt).toLocaleString()}</p>
                         <p className="font-semibold">
                             Tổng tiền đơn hàng: <span className="text-red-500">{totalAmount.toLocaleString()}đ</span>
                         </p>
-                        <div className="space-y-4 mt-2">
-                            {orderTools.map(orderTool => (
-                                <div key={orderTool.orderToolId} className="p-4 border rounded-md shadow">
-                                    <p><strong>Tên sản phẩm:</strong> {orderTool.tool.name}</p>
-                                    <p>
-                                        <strong>Giá:</strong>
-                                        {(orderTool.tool.discountedPrice || orderTool.tool.price).toLocaleString()}đ
-                                        (x{orderTool.quantity})
-                                    </p>
-                                    <p><strong>Tổng tiền:</strong> {(orderTool.quantity * (orderTool.tool.discountedPrice || orderTool.tool.price)).toLocaleString()}đ</p>
-                                </div>
-                            ))}
+
+                        {expandedOrders[orderId] && (
+                            <div className="space-y-4 mt-2">
+                                {orderTools.map(orderTool => (
+                                    <div key={orderTool.orderToolId} className="p-4 border rounded-md shadow">
+                                        <p><strong>Tên sản phẩm:</strong> {orderTool.tool.name}</p>
+                                        <p>
+                                            <strong>Giá: </strong>
+                                            {(orderTool.tool.discountedPrice || orderTool.tool.price).toLocaleString()}đ
+                                            (x{orderTool.quantity})
+                                        </p>
+                                        <p><strong>Tổng tiền:</strong> {(orderTool.quantity * (orderTool.tool.discountedPrice || orderTool.tool.price)).toLocaleString()}đ</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="mt-4">
+                            {(orderStatus === "SHIPPED" || orderStatus === "DELIVERED" || orderStatus === "CANCELLED") || (
+                                <Button
+                                    type="primary"
+                                    className={"mt-2 " + getOrderStatusButtonClass(orderStatus)}
+                                    onClick={() => handleApproveOrder(orderId, orderTools)}
+                                >
+                                    {getOrderStatusButton(orderStatus)}
+                                </Button>
+                            )}
+                            <p className="mt-1 text-sm text-gray-600">{getOrderStatusTitle(orderStatus)}</p>
                         </div>
-
-
-                        <Button
-                            type="primary"
-                            className="mt-4"
-                            onClick={() => handleApproveOrder(orderId, orderStatus)}
-                        >
-                            {
-                                orderStatus === "PENDING" ? "Duyệt đơn hàng" :
-                                    (
-                                        orderStatus === "CONFIRMED" ? "Dã giao cho Shipper" : // sau khi duyệt xong sẽ có trạng thái CONFIRMED, người bán sẽ cần phải chuẩn bị hàng 
-                                            (
-                                                orderStatus === "SHIPPED" ? "Đang giao hàng" : "Giao hàng thành công"
-                                            )
-                                    )
-                            }
-                        </Button>
                     </div>
-                )
-            }
-            )}
-        </div >
+                );
+            })}
+        </div>
     );
-}
+};
 
 export default OrderManagement;

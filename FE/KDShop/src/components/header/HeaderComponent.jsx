@@ -74,7 +74,7 @@ const HeaderComponent = () => {
         <Header className="flex items-center px-8 h-[70px] shadow-md fixed-header" style={{ backgroundColor: "#8294C4" }}>
             <div className="flex items-center flex-none">
                 <div className="text-white text-2xl font-bold cursor-pointer hover:scale-105" onClick={() => navigate('/')}>
-                    KD SHOP
+                    PU SHOP
                 </div>
             </div>
 

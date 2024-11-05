@@ -22,9 +22,9 @@ const ProductManagement = () => {
 
     const handleCreateOrUpdate = async (toolData) => {
         if (editingTool) {
-            await updateTool({ toolId: editingTool.toolId, updatedTool: toolData });
+            updateTool({ toolId: editingTool.toolId, updatedTool: toolData });
         } else {
-            await createNewTool(toolData);
+            createNewTool(toolData);
         }
         setIsModalVisible(false);
         setEditingTool(null);
@@ -36,7 +36,7 @@ const ProductManagement = () => {
     };
 
     const handleDelete = async (toolId) => {
-        await deleteTool(toolId);
+        deleteTool(toolId);
     };
 
     const openCreateModal = () => {

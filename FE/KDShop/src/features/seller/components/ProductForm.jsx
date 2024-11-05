@@ -1,15 +1,37 @@
-import { Modal, Form, Input, InputNumber, Select, Switch, Button } from "antd";
+import { Modal, Form, Input, InputNumber, Select, Switch, Button, Upload, Row, Col } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { useCreateToolType } from "../hooks/useCreateToolType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { uploadFile } from "../../../services/FileService";
+import { TOOL_URL } from "../../../utils/Config";
 
 const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTypes, isToolTypesLoading }) => {
     const [form] = Form.useForm();
     const { createToolType, isLoading: isCreatingToolType } = useCreateToolType();
     const [isCreatingNewType, setIsCreatingNewType] = useState(false);
+    const [imageFileName, setImageFileName] = useState(editingTool?.imageUrl || "");
+
+    // Reset form fields khi mở hoặc đóng modal
+    useEffect(() => {
+        if (visible) {
+            if (editingTool) {
+                // Đặt giá trị khi đang chỉnh sửa
+                form.setFieldsValue({
+                    ...editingTool,
+                    toolTypeId: editingTool?.toolType?.toolTypeId,
+                });
+                setImageFileName(editingTool.imageUrl || "default.png");
+            } else {
+                // Xóa toàn bộ giá trị khi form chuyển sang thêm mới
+                form.resetFields();
+                setImageFileName("");
+                setIsCreatingNewType(false);
+            }
+        }
+    }, [editingTool, form, visible]);
 
     const handleCreateOrUpdate = async (values) => {
         let toolTypeId = values.toolTypeId;
-
         if (isCreatingNewType && values.newToolType) {
             const response = await createToolType({ name: values.newToolType });
             toolTypeId = response?.toolTypeId;
@@ -17,6 +39,7 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
 
         const toolData = {
             ...values,
+            imageUrl: imageFileName,
             toolType: { toolTypeId },
             user: { userId }
         };
@@ -24,11 +47,17 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
         await onSubmit(toolData);
         form.resetFields();
         setIsCreatingNewType(false);
+        setImageFileName("");
     };
 
     const toggleToolTypeInput = (checked) => {
         setIsCreatingNewType(checked);
         form.setFieldsValue({ newToolType: "" });
+    };
+
+    const handleImageUpload = async ({ file }) => {
+        const fileName = await uploadFile(file, "tools");
+        setImageFileName(fileName);
     };
 
     return (
@@ -43,7 +72,6 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
                 onFinish={handleCreateOrUpdate}
                 layout="vertical"
                 className="space-y-4"
-                initialValues={editingTool}
             >
                 <Form.Item
                     label="Tên sản phẩm"
@@ -52,6 +80,7 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
                 >
                     <Input />
                 </Form.Item>
+
                 <Form.Item
                     label="Mô tả"
                     name="description"
@@ -59,31 +88,37 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
                 >
                     <Input.TextArea />
                 </Form.Item>
-                <Form.Item
-                    label="Giá giảm"
-                    name="discountedPrice"
-                >
-                    <InputNumber min={0} style={{ width: "100%" }} />
-                </Form.Item>
-                <Form.Item
-                    label="Giá"
-                    name="price"
-                    rules={[{ required: true, message: "Vui lòng nhập giá sản phẩm!" }]}
-                >
-                    <InputNumber min={0} style={{ width: "100%" }} />
-                </Form.Item>
-                <Form.Item
-                    label="Số lượng"
-                    name="stockQuantity"
-                >
-                    <InputNumber min={0} style={{ width: "100%" }} />
-                </Form.Item>
-                <Form.Item
-                    label="URL Ảnh"
-                    name="imageUrl"
-                >
-                    <Input />
-                </Form.Item>
+
+                <Row gutter={16}>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Giá"
+                            name="price"
+                            rules={[{ required: true, message: "Vui lòng nhập giá sản phẩm!" }]}
+                        >
+                            <InputNumber min={0} style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item
+                            label="Giá giảm"
+                            name="discountedPrice"
+                        >
+                            <InputNumber min={0} style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item
+                            label="Số lượng"
+                            name="stockQuantity"
+                        >
+                            <InputNumber min={0} style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
                 <Form.Item label="Loại sản phẩm">
                     <Switch
                         checkedChildren="Tạo mới"
@@ -109,6 +144,18 @@ const ProductForm = ({ userId, visible, onCancel, onSubmit, editingTool, toolTyp
                         </Form.Item>
                     )}
                 </Form.Item>
+
+                <Form.Item label="Ảnh sản phẩm">
+                    <Upload
+                        customRequest={handleImageUpload}
+                        showUploadList={false}
+                        accept="image/*"
+                    >
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                    </Upload>
+                    {imageFileName && <div><img className="w-20 h-20 object-cover mt-2" src={TOOL_URL + imageFileName} /></div>}
+                </Form.Item>
+
                 <Form.Item>
                     <Button
                         type="primary"

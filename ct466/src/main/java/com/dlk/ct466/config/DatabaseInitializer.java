@@ -241,18 +241,28 @@ public class DatabaseInitializer implements CommandLineRunner {
             }
             userService.createUser(adminUser);
 
-            // tạo user với role SELLER
-            User sellerUser = new User();
-            sellerUser.setEmail("seller@gmail.com");
-            sellerUser.setFullName("I'm seller");
-            sellerUser.setPassword("123456");
-            sellerUser.setImageUrl("default.png");
+            // tạo user với role SELLER1
+            User sellerUser1 = new User();
+            sellerUser1.setEmail("seller1@gmail.com");
+            sellerUser1.setFullName("I'm seller 1");
+            sellerUser1.setPassword("123456");
+            sellerUser1.setImageUrl("default.png");
+
+
+            // tạo user với role SELLER2
+            User sellerUser2 = new User();
+            sellerUser2.setEmail("seller2@gmail.com");
+            sellerUser2.setFullName("I'm seller 2");
+            sellerUser2.setPassword("123456");
+            sellerUser2.setImageUrl("default.png");
 
             Role sellerRole = this.roleRepository.findByName("SELLER");
             if (sellerRole != null) {
-                sellerUser.setRole(sellerRole);
+                sellerUser1.setRole(sellerRole);
+                sellerUser2.setRole(sellerRole);
             }
-            userService.createUser(sellerUser);
+            userService.createUser(sellerUser1);
+            userService.createUser(sellerUser2);
 
             // tạo user với role BUYER1
             User buyerUser1 = new User();
@@ -295,7 +305,8 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
 
         if (toolRepository.count() == 0) {
-            User user = userRepository.findByEmail("seller@gmail.com").orElse(null);
+            User seller1 = userRepository.findByEmail("seller1@gmail.com").orElse(null);
+            User seller2 = userRepository.findByEmail("seller2@gmail.com").orElse(null);
             // Khởi tạo Tool
             List<Tool> tools = new ArrayList<>();
 
@@ -309,7 +320,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
                     .isActive(true)
                     .deleted(false)
-                    .user(user)
+                    .user(seller1)
                     .build());
 
             tools.add(Tool.builder()
@@ -333,7 +344,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
                     .isActive(true)
                     .deleted(false)
-                    .user(user)
+                    .user(seller1)
                     .build());
 
             tools.add(Tool.builder()
@@ -360,7 +371,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .toolType(toolTypeRepository.findById(2L).orElse(null))
                     .isActive(true)
                     .deleted(false)
-                    .user(user)
+                    .user(seller1)
                     .build());
 
             tools.add(Tool.builder()
@@ -379,7 +390,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .toolType(toolTypeRepository.findById(3L).orElse(null))
                     .isActive(true)
                     .deleted(false)
-                    .user(user)
+                    .user(seller1)
                     .build());
 
             tools.add(Tool.builder()
@@ -393,7 +404,45 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .toolType(toolTypeRepository.findById(1L).orElse(null))
                     .isActive(true)
                     .deleted(false)
-                    .user(user)
+                    .user(seller1)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("Bút Cánh Diều 202 ngòi kim tinh\n")
+                    .description("Bút Cánh Diều 202 có thiết kế nhỏ gọn phù hợp với học sinh tiểu học, với kiểu ngòi kim tinh kín giúp hạn chế tối đa lem bẩn mực do chạm vào ngòi. \n" +
+                            "Bút có định vị tay cầm, phần định vị làm vân sọc ngang giúp cầm bút êm, không trơn.")
+                    .price(new BigDecimal("25000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .stockQuantity(25)
+                    .imageUrl("canhdieu1.png")
+                    .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
+                    .user(seller2)
+                    .build());
+
+            tools.add(Tool.builder()
+                    .name("Bút Cánh Diều 107 ngòi kim tinh\n")
+                    .description("- Bút có định vị tay cầm, phần định vị làm vân sọc ngang giúp cầm bút êm, không " +
+                            "trơn.\n \n" +
+                            "- Mực ra đều, vừa đủ nên nhanh khô.\n" +
+                            "\n" +
+                            "- Ngòi nét nhỏ phù hợp học sinh tiểu học viết hàng ngày.\n" +
+                            "\n" +
+                            "- Bút có sẵn Converter (piston) bơm mực đi kèm. Bút lắp ống mực chuẩn 2,6mm.\n" +
+                            "\n" +
+                            "- Thân bút bằng nhựa dẻo, bền, va đập không bị nứt vỡ. Có nhiều lựa chọn màu sắc rất đáng yêu.\n" +
+                            "\n" +
+                            "- Bút giá 35k, ngòi thay giá 5k (ngòi rất dễ thay). Bút dùng cùng loại ngòi với bút CD 202 và CD 106\n" +
+                            "✅Bút có 2 kiểu ngòi:")
+                    .price(new BigDecimal("30000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .stockQuantity(25)
+                    .imageUrl("canhdieu2.png")
+                    .toolType(toolTypeRepository.findById(1L).orElse(null))
+                    .isActive(true)
+                    .deleted(false)
+                    .user(seller2)
                     .build());
 
             toolRepository.saveAll(tools);

@@ -16,9 +16,8 @@ const OrderHistory = () => {
 
     const userId = useSelector(state => state?.account?.user?.id);
     const { orders, isLoading } = useGetOrderByUserId(userId);
-    const { getOrderToolByOrderId } = useGetOrderToolByOrderId();
     const { getToolByToolId, isLoadingTool } = useGetToolByToolId();
-
+    
     // Hàm tính toán tổng tiền cho đơn hàng
     const calculateTotalAmount = (orderItems) => {
         return orderItems.reduce((total, item) => {
@@ -26,7 +25,8 @@ const OrderHistory = () => {
             return total + price * item.quantity;
         }, 0);
     };
-
+    
+    const { getOrderToolByOrderId } = useGetOrderToolByOrderId();
     // Hàm cập nhật chi tiết đơn hàng thêm thuộc tính của tool
     const fetchOrderItems = async () => {
         const allOrderItems = {};

@@ -15,7 +15,7 @@ public enum OrderStatusEnum {
     DELIVERED,          // Đơn hàng đã được giao
     CANCELLED,          // Đơn hàng đã bị hủy
     RETURN_REQUESTED,   // Khách hàng yêu cầu trả lại hàng
-    RETURNED,           // Hàng đã được trả lại thành công.
+    RETURNED,           // Hàng đã được chấp nhận trả lại thành công.
     REFUNDED;           // Đơn hàng cần hoàn tiền
 
     @JsonCreator

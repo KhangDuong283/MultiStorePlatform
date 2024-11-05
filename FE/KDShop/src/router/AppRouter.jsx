@@ -24,6 +24,8 @@ import ProductManagement from "../features/seller/components/ProductManagement";
 import OrderManagement from "../features/seller/components/OrderManagement";
 import CourseManagement from "../features/seller/components/CourseManagement";
 import Statistics from "../features/seller/components/Statistics";
+import VideoPlayList from "../pages/VideoPlayList";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -75,6 +77,10 @@ const router = createBrowserRouter([
                 path: "admin-home",
                 element:
                     <AdminHome />,
+            },
+            {
+                path: "video",
+                element: <VideoPlayList />
             }
         ]
     },

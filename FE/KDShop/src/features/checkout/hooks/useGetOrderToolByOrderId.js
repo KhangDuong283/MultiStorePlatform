@@ -3,7 +3,7 @@ import { callGetOrderToolByOrderId } from "../../../services/OrderToolService";
 
 export function useGetOrderToolByOrderId() {
     const { mutateAsync: getOrderToolByOrderId, isLoading, error } = useMutation({
-        queryKey: ["order-tools"],
+        mutationKey: ["order-tools"],
         mutationFn: (orderId) => {
             if (orderId) {
                 return callGetOrderToolByOrderId(orderId);

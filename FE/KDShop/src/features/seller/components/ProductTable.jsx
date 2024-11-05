@@ -17,7 +17,9 @@ const ProductTable = ({ tools, onEdit, onDelete, isDeleting }) => {
             key: "imageUrl",
             width: "7rem",
             align: "center",
-            render: (text) => text ? <img src={TOOL_URL + text} alt="Ảnh sản phẩm" className="w-20 h-20 object-cover rounded-lg shadow-sm" /> : "No image",
+            render: (text) => text ?
+                <img src={TOOL_URL + text} alt="Ảnh sản phẩm" className="w-20 h-20 object-cover rounded-lg shadow-sm" /> :
+                <img src={TOOL_URL + "default.png"} alt="Ảnh sản phẩm" className="w-20 h-20 object-cover rounded-lg shadow-sm" />,
         },
         {
             title: "Mô tả",
