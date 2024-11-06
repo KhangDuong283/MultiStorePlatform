@@ -55,3 +55,14 @@
 :where(.css-dev-only-do-not-override-ni1kz0).ant-card .ant-card-body {
     padding: 0.8rem;
 }
+
+/* Cho hiển thị text trên 2 dòng nếu dài hơn thì ... */
+.text-two-lines {
+    display: -webkit-box;          
+    -webkit-line-clamp: 2;         
+    -webkit-box-orient: vertical;  
+    overflow: hidden;              
+    text-overflow: ellipsis;       
+    white-space: normal;           
+}
+

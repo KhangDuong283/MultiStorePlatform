@@ -1,7 +1,6 @@
-// CartItem.jsx
 import { List, InputNumber, Checkbox, Button } from 'antd';
 import { DeleteOutlined, HighlightOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
-
+import { TOOL_URL } from "../../../utils/Config"
 const CartItem = ({ item, onRemove, onUpdateQuantity, onToggleSelect, selectedItems }) => {
     return (
         <List.Item
@@ -13,7 +12,7 @@ const CartItem = ({ item, onRemove, onUpdateQuantity, onToggleSelect, selectedIt
                             min={1}
                             value={item.quantity}
                             onChange={(value) => onUpdateQuantity(item.id, value)}
-                            size="small" // Giảm kích thước InputNumber
+                            size="small"
                         />
                     )}
                     <Button
@@ -32,7 +31,7 @@ const CartItem = ({ item, onRemove, onUpdateQuantity, onToggleSelect, selectedIt
                             checked={selectedItems.includes(item.id)}
                             onChange={() => onToggleSelect(item.id)}
                         />
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" /> {/* Giảm kích thước hình ảnh */}
+                        <img src={TOOL_URL + item.image} alt={item.name} className="w-16 h-16 object-cover rounded" /> {/* Giảm kích thước hình ảnh */}
                     </div>
                 }
                 title={
@@ -43,15 +42,14 @@ const CartItem = ({ item, onRemove, onUpdateQuantity, onToggleSelect, selectedIt
                             <VideoCameraAddOutlined className="text-green-500 text-sm flex-none" />
                         )}
                         <span
-                            className="text-sm font-semibold text-base overflow-hidden line-clamp-1 w-full"
-                            style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }} // Giới hạn tiêu đề một dòng
+                            className="text-sm font-semibold text-base overflow-hidden line-clamp-1 w-full text-two-lines"
                         >
                             {item.name}
                         </span>
                     </div>
                 }
                 description={(
-                    <div className="text-xs">
+                    <div className="text-sm">
                         {item.discountPrice !== 0 ? (
                             <>
                                 <p className="line-through text-gray-500">{item.price.toLocaleString()} VND</p>

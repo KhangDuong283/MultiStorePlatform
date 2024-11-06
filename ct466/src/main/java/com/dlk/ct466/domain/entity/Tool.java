@@ -32,8 +32,6 @@ public class Tool extends BaseEntity {
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
 
-    @DecimalMin(value = "0.0", message = "Discounted price must be greater than 0")
-    BigDecimal discountedPrice;
 
     int stockQuantity;
     String imageUrl;
@@ -42,6 +40,9 @@ public class Tool extends BaseEntity {
     @NotNull(message = "Tool price could not be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     BigDecimal price;
+
+    @DecimalMin(value = "0.0", message = "Discounted price must be greater than 0")
+    BigDecimal discountedPrice;
 
     @Column(nullable = false)
     boolean deleted = false;

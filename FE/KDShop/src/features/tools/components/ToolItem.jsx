@@ -84,7 +84,7 @@ const ToolItem = ({ tool }) => {
                 <Meta
                     title={
                         <span
-                            className="text-base cursor-pointer"
+                            className="text-base cursor-pointer text-two-lines"
                             onClick={navigateToDetailPage}
                         >
                             {tool.name}

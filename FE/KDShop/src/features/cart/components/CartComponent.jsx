@@ -1,4 +1,3 @@
-// CartComponent.js
 import { useEffect, useState } from 'react';
 import CartList from './CartList';
 import CartSummary from './CartSummary';

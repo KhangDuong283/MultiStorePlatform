@@ -1,0 +1,109 @@
+// CourseItem.js
+import { Card } from "antd";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import LoginModal from "./LoginModal";
+import CourseOverlay from "./CourseOvelay";
+
+const { Meta } = Card;
+
+const CourseItem = ({ course }) => {
+    const navigate = useNavigate();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+
+
+    const onAddToCartClick = () => {
+        // Kiểm tra xem người dùng đã đăng nhập chưa
+
+
+        // Hiển thị modal yêu cầu đăng nhập khi chưa login
+        setIsModalVisible(true);
+    };
+
+    const handleLogin = () => {
+        setIsModalVisible(false);
+        navigate("/auth/login");
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const navigateToDetailPage = () => {
+        navigate(`/course-detail/${course.courseId}`);
+    };
+
+    return (
+        <>
+            <Card
+                className="relative transition-transform duration-100 shadow-md"
+                hoverable
+                onMouseEnter={() => setIsPopoverVisible(true)}
+                onMouseLeave={() => setIsPopoverVisible(false)}
+                cover={
+                    <div className="h-52 w-full overflow-hidden">
+                        <img
+                            alt={course.playlistDetails.title}
+                            src={course.playlistDetails.thumbnail}
+                            className="h-full w-full object-cover transform scale-150 cursor-pointer"
+                            onClick={navigateToDetailPage}
+                        />
+                    </div>
+
+                }
+            >
+                <Meta
+                    title={
+                        <span
+                            className="text-base cursor-pointer text-two-lines"
+                            onClick={navigateToDetailPage}
+                        >
+                            {course.playlistDetails.title}
+                        </span>
+                    }
+                    description={
+                        <div className="text-sm" onClick={navigateToDetailPage}>
+                            <div className="text-red-500 font-semibold">
+                                {course.discountedPrice !== 0 ? (
+                                    <>
+                                        <span className="text-gray-500 line-through">
+                                            {course.price.toLocaleString()}₫
+                                        </span>
+                                        {course.discountedPrice.toLocaleString()}₫
+                                    </>
+                                ) : (
+                                    <>
+                                        {course.price.toLocaleString()}₫
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    }
+                />
+
+                {isPopoverVisible && (
+                    <CourseOverlay
+                        onAddToCartClick={onAddToCartClick}
+                        name={course.playlistDetails.title}
+                        duration={course.playlistDetails.totalDuration}
+                        totalVideos={course.playlistDetails.videoCount}
+                        description={course.playlistDetails.description}
+                        updatedAt={course.updatedAt}
+                        publishedAt={course.playlistDetails.publishedAt}
+                    // price={course.price}
+                    // discountedPrice={course.discountedPrice}
+                    />
+                )}
+            </Card>
+
+            <LoginModal
+                isModalVisible={isModalVisible}
+                handleLogin={handleLogin}
+                handleCancel={handleCancel}
+            />
+        </>
+    );
+};
+
+export default CourseItem;

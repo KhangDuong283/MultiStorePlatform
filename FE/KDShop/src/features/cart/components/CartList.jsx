@@ -1,4 +1,3 @@
-// CartList.jsx
 import { List } from 'antd';
 import CartItem from './CartItem';
 

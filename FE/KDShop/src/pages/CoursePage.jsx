@@ -1,15 +1,15 @@
 import CardContainer from "../components/CardContainer"
-import ToolList from "../features/tools/components/ToolList"
+import CourseList from "../features/courses/components/CourseList"
 
 
-const ToolPage = () => {
+const CoursePage = () => {
     return (
         <div className="pt-1">
             <CardContainer>
-                <ToolList />
+                <CourseList />
             </CardContainer>
         </div>
     )
 }
 
-export default ToolPage
+export default CoursePage

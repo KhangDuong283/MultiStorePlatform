@@ -8,7 +8,6 @@ import Auth from "../pages/Auth";
 import LoginForm from "../features/auth/components/LoginForm";
 import RegisterForm from "../features/auth/components/RegisterForm";
 import ForgotPasswordForm from "../features/auth/components/ForgotPasswordForm";
-import CourseList from "../features/courses/components/CourseList";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -24,8 +23,8 @@ import ProductManagement from "../features/seller/components/ProductManagement";
 import OrderManagement from "../features/seller/components/OrderManagement";
 import CourseManagement from "../features/seller/components/CourseManagement";
 import Statistics from "../features/seller/components/Statistics";
-import VideoPlayList from "../pages/VideoPlayList";
-
+import CoursePage from "../pages/CoursePage";
+import CourseDetail from "../pages/VideoPlayList";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -43,7 +42,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "courses",
-                element: <CourseList />,
+                element: <CoursePage />,
             },
             {
                 path: "cart",
@@ -60,6 +59,10 @@ const router = createBrowserRouter([
             {
                 path: "tool/:toolId",
                 element: <ProductDetailPage />,
+            },
+            {
+                path: "course-detail/:courseId",
+                element: <CourseDetail />
             }
         ]
     },
@@ -78,10 +81,6 @@ const router = createBrowserRouter([
                 element:
                     <AdminHome />,
             },
-            {
-                path: "video",
-                element: <VideoPlayList />
-            }
         ]
     },
     {

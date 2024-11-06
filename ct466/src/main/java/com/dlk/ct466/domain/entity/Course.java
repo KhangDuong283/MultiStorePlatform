@@ -1,6 +1,5 @@
 package com.dlk.ct466.domain.entity;
 
-import com.dlk.ct466.util.constant.OrderStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -12,38 +11,40 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "courses")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Order extends BaseEntity {
+public class Course extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String orderId;
+    String courseId;
+
+    String courseUrl;
 
     @Column(nullable = false)
-    @NotNull(message = "Shipping cost could not be null")
-    @DecimalMin(value = "0.0", message = "Shipping cost must be greater than 0")
-    BigDecimal shippingCost;
+    @NotNull(message = "Course price could not be null")
+    @DecimalMin(value = "0.0", message = "Price must be greater equal than 0")
+    BigDecimal price;
+
+    @DecimalMin(value = "0.0", message = "Discounted price must be greater equal than 0")
+    BigDecimal discountedPrice;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    OrderStatusEnum status;
+    boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     User user;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_method_id")
-    PaymentMethod paymentMethod;
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<CartCourse> cartCourses;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    Address address;
-
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    List<OrderTool> orderTools;
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<OrderCourse> orderCourses;
 }
