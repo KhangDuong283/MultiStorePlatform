@@ -9,12 +9,13 @@ export const callCreateOrder = async (order) => {
 export const callGetOrdersByUserId = async (userId) => {
     const path = `/api/v1/orders/user-order/${userId}`;
     const res = await axios.get(path);
+
     return res?.data;
 }
 
 export const callUpdateOrderByOrderId = async (orderId, orderUpdate) => {
-    console.log(orderUpdate);
     const path = `/api/v1/orders/${orderId}`;
     const res = await axios.put(path, orderUpdate);
+    console.log(res);
     return res?.data;
 }

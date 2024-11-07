@@ -5,7 +5,7 @@ const ToolList = () => {
     const { isLoading, error, tools } = useTools();
 
     if (isLoading) {
-        return <div className="text-center">Đang tải dữ liệu...</div>;
+        return <div className="text-center">Đang tải dữ liệu sản phẩm...</div>;
     }
 
     if (error) {

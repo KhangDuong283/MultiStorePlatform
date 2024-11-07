@@ -32,6 +32,7 @@ async function fetchPlaylistDetails(playlistUrl) {
             thumbnail: playlist.snippet.thumbnails.high.url,
             videoCount: playlist.contentDetails.itemCount,
             publishedAt: playlist.snippet.publishedAt,
+            channelTitle: playlist.snippet.channelTitle,
             totalDuration: 0,
             videos: []
         };

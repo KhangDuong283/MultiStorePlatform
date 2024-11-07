@@ -1,4 +1,4 @@
-import { Button, Card, Modal } from "antd";
+import { Button, Card } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useCreateCartTool } from "../../cart/hooks/useCreateCartTool";
 import { useCheckExistCartTool } from "../../cart/hooks/useCheckExistCartTool";
@@ -10,6 +10,7 @@ import { TOOL_URL } from "../../../utils/Config";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleAddToCart } from "../../cart/handleAddtoCart";
+import LoginModal from "../../../components/LoginModal";
 
 const { Meta } = Card;
 
@@ -26,6 +27,10 @@ const ToolItem = ({ tool }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const onAddToCartClick = async () => {
+        if (userId == undefined || userId == null || userId == "") {
+            return setIsModalVisible(true);
+        }
+
         await handleAddToCart({
             tool,
             permissions,
@@ -41,14 +46,6 @@ const ToolItem = ({ tool }) => {
         });
     };
 
-    const handleLogin = () => {
-        setIsModalVisible(false);
-        navigate("/auth/login");
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     // Hàm chuyển đến trang chi tiết sản phẩm
     const navigateToDetailPage = () => {
@@ -82,6 +79,7 @@ const ToolItem = ({ tool }) => {
                 ]}
             >
                 <Meta
+                    style={{ height: '16vh' }}
                     title={
                         <span
                             className="text-base cursor-pointer text-two-lines"
@@ -112,16 +110,11 @@ const ToolItem = ({ tool }) => {
                 />
             </Card>
 
-            <Modal
-                title="Thông báo"
-                open={isModalVisible}
-                onOk={handleLogin}
-                onCancel={handleCancel}
-                okText="Đăng nhập"
-                cancelText="Hủy"
-            >
-                <p>Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
-            </Modal>
+            <LoginModal
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            />
+
         </>
     );
 };

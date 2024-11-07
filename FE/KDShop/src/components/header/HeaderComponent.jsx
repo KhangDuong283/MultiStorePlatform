@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLogoutUser } from '../../redux/slices/accountSlice';
 import { toast } from 'react-toastify';
 import { useCartContext } from '../CartProvider';
+import { useUpdateUserRoleByUserId } from '../../features/auth/hooks/useUpdateUserRoleByUserId';
+import { useEffect, useState } from 'react';
 
 const { Header } = Layout;
 const menuItems = [
@@ -22,7 +24,7 @@ const HeaderComponent = () => {
     const { cartQuantity } = useCartContext();
     const user = useSelector(state => state.account?.user);
     const permissions = user?.role?.permissions;
-    const role = user?.role?.name;
+    let role = user?.role?.name;
     const userName = user?.fullName;
 
     const handleLogout = () => {
@@ -30,6 +32,14 @@ const HeaderComponent = () => {
         toast.success("Đăng xuất thành công!");
         navigate('/');
     };
+
+    const { updateUserRole } = useUpdateUserRoleByUserId();
+    const handleBecomeSeller = () => {
+        updateUserRole({ userId: user?.id, role: { roleId: 2 } });
+        handleLogout();
+        navigate('/auth/login');
+        toast.success("Bạn đã trở thành người bán hãy đăng nhập lại");
+    }
 
 
     const menuItemsForDropdown = [
@@ -49,7 +59,7 @@ const HeaderComponent = () => {
         }] : [{
             key: '4',
             label: <span className="block text-base px-1 py-1">Trở thành người bán</span>,
-            onClick: () => navigate('/register-seller'),
+            onClick: handleBecomeSeller,
         }]),
         {
             type: 'divider',

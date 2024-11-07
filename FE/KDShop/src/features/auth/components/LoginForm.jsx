@@ -34,6 +34,7 @@ const LoginForm = () => {
 
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
+            console.log(res.data.user);
             dispatch(setLoginUserInfo(res.data.user))
 
             toast.success('Đăng nhập thành công');

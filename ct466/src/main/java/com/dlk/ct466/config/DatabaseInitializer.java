@@ -85,6 +85,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Restore a user", "/api/v1/users/{id}", "PATCH", "USERS"));
             arr.add(new Permission("Get a user by id", "/api/v1/users/{id}", "GET", "USERS"));
             arr.add(new Permission("Get users with pagination", "/api/v1/users", "GET", "USERS"));
+            arr.add(new Permission("Update user role", "/api/v1/users/user-role", "POST", "USERS"));
 
             arr.add(new Permission("Create a payment method", "/api/v1/paymentmethods", "POST", "PAYMENT_METHODS"));
             arr.add(new Permission("Update a payment method", "/api/v1/paymentmethods/{id}", "PUT", "PAYMENT_METHODS"));
@@ -181,7 +182,9 @@ public class DatabaseInitializer implements CommandLineRunner {
                     permissionRepository.findByName("Delete a tooltypes"),
                     permissionRepository.findByName("Get a tooltypes by id"),
                     permissionRepository.findByName("Restore tooltypes by id"),
-                    permissionRepository.findByName("Get tooltypes with pagination")
+                    permissionRepository.findByName("Get tooltypes with pagination"),
+                    permissionRepository.findByName("Update user role")
+
             );
             Role sellerRole = new Role();
             sellerRole.setName("SELLER");
@@ -209,7 +212,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                     permissionRepository.findByName("Get orders by status"),
                     permissionRepository.findByName("Get an order by ID"),
                     permissionRepository.findByName("Restore a tool"),
-                    permissionRepository.findByName("Get a user by id")
+                    permissionRepository.findByName("Get a user by id"),
+                    permissionRepository.findByName("Update user role")
             );
             Role buyerRole = new Role();
             buyerRole.setName("BUYER");

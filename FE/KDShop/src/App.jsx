@@ -16,7 +16,7 @@ dayjs.tz.setDefault("Asia/Ho_Chi_Minh");
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000,
+      staleTime: 0,
       gcTime: 60 * 1000 * 60,
     },
   },

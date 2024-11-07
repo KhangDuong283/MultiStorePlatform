@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useGetAllToolByUserId } from "../hooks/useGetAllToolByUserId";
 import { useUniqueOrderIds } from "../hooks/useUniqueOrderIds";
 import { useGetOrderToolByOrderId } from "../../checkout/hooks/useGetOrderToolByOrderId";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import { useUpdateOrder } from "../hooks/useUpdateOrder";
 
 const OrderManagement = () => {
@@ -69,10 +69,12 @@ const OrderManagement = () => {
                 return "Đang giao hàng";
             case "DELIVERED":
                 return "Giao hàng thành công";
-            case "RETURN_REQUESTED":
-                return "Chấp nhận yêu cầu trả hàng";
             case "CANCELLED":
                 return "Đơn hàng đã hủy";
+            case "SUCCESS":
+                return "Đơn hàng thực hiện thành công"
+            case "RETURN_SUCCEEDED":
+                return "Đơn hàng đã hoàn trả"
             default:
                 return "Trạng thái không xác định";
         }
@@ -87,13 +89,17 @@ const OrderManagement = () => {
             case "SHIPPED":
                 return "Đơn hàng đang được giao";
             case "DELIVERED":
-                return "Đơn hàng đã được giao thành công";
+                return "Đơn hàng đã được giao";
             case "RETURN_REQUESTED":
-                return "Khách hàng yêu cầu trả hàng đang chờ chấp nhận";
+                return "Khách hàng yêu cầu trả hàng";
             case "CANCELLED":
                 return "Đơn hàng đã bị hủy bởi khách hàng";
-            case "RETURNED":
-                return "Đơn hàng đã được trả hàng";
+            case "RETURN_SUCCEEDED":
+                return "Bạn đã chấp nhận yêu cầu hoàn trả"
+            case "RETURN_REFUSED":
+                return "Bạn đã từ chối yêu cầu hoàn trả"
+            case "SUCCESS":
+                return "Đơn hàng thực hiện thành công"
             default:
                 return "Trạng thái không xác định";
         }
@@ -113,10 +119,29 @@ const OrderManagement = () => {
                 return "bg-purple-500 hover:bg-purple-600";
             case "CANCELLED":
                 return "bg-gray-400 cursor-not-allowed";
+            case "SUCCESS":
+                return "bg-green-500 hover:bg-green-600";
             default:
                 return "bg-gray-500";
         }
     };
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'SHIPPED': return 'blue';
+            case 'PENDING': return 'orange';
+            case 'CONFIRMED': return 'purple';
+            case 'DELIVERED': return 'green';
+            case 'RETURN_REQUESTED': return 'yellow';
+            case 'CANCELLED': return 'gray';
+            case 'SUCCESS': return 'green'
+            case 'RETURN_SUCCEEDED': return 'green';
+            case 'RETURN_REFUSED': return 'orange';
+
+            default: return 'default';
+        }
+    };
+
 
     const { updateOrder } = useUpdateOrder();
 
@@ -129,8 +154,6 @@ const OrderManagement = () => {
             newStatus = "SHIPPED";
         } else if (currentStatus === "SHIPPED") {
             newStatus = "DELIVERED";
-        } else if (currentStatus === "RETURN_REQUESTED") {
-            newStatus = "RETURNED";
         }
 
         const orderUpdate = {
@@ -158,6 +181,64 @@ const OrderManagement = () => {
             }))
         }));
     };
+
+    const handleAccept = (orderId, orderTools) => {
+        const orderUpdate = {
+            status: "RETURN_SUCCEEDED",
+            shippingCost: orderTools[0].order.shippingCost,
+            user: {
+                userId: orderTools[0].order.user.userId
+            },
+            paymentMethod: {
+                paymentMethodId: orderTools[0].order.paymentMethod.paymentMethodId
+            },
+            address: {
+                addressId: orderTools[0].order.address.addressId
+            }
+        };
+
+        updateOrder({ orderId, orderUpdate });
+
+        // Cập nhật trạng thái thủ công trong UI
+        setOrdersWithTools(prevOrder => ({
+            ...prevOrder,
+            [orderId]: prevOrder[orderId].map(orderTool => ({
+                ...orderTool,
+                order: { ...orderTool.order, status: "RETURN_SUCCEEDED" }
+            }))
+        }));
+    }
+
+    const handleRefuse = (orderId, orderTools) => {
+        const orderUpdate = {
+            status: "RETURN_REFUSED",
+            shippingCost: orderTools[0].order.shippingCost,
+            user: {
+                userId: orderTools[0].order.user.userId
+            },
+            paymentMethod: {
+                paymentMethodId: orderTools[0].order.paymentMethod.paymentMethodId
+            },
+            address: {
+                addressId: orderTools[0].order.address.addressId
+            }
+        };
+
+        updateOrder({ orderId, orderUpdate });
+
+        // Cập nhật trạng thái thủ công trong UI
+        setOrdersWithTools(prevOrder => ({
+            ...prevOrder,
+            [orderId]: prevOrder[orderId].map(orderTool => ({
+                ...orderTool,
+                order: { ...orderTool.order, status: "RETURN_REFUSED" }
+            }))
+        }));
+    }
+
+
+
+
 
     // Tính tổng doanh thu chỉ cho các đơn hàng có trạng thái DELIVERED
     const totalRevenue = Object.entries(ordersWithTools).reduce((total, [orderId, orderTools]) => {
@@ -197,7 +278,17 @@ const OrderManagement = () => {
                             </Button>
                         </h2>
                         <p><strong>Người mua:</strong> {orderTools[0].order.user.fullName}</p>
-                        <p><strong>Ngày tạo:</strong> {new Date(orderTools[0].createdAt).toLocaleString()}</p>
+                        <p>
+                            <strong>Ngày tạo:</strong> {new Date(orderTools[0].createdAt).toLocaleDateString('vi-VN', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false
+                            })}
+                        </p>
                         <p className="font-semibold">
                             Tổng tiền đơn hàng: <span className="text-red-500">{totalAmount.toLocaleString()}đ</span>
                         </p>
@@ -218,17 +309,53 @@ const OrderManagement = () => {
                             </div>
                         )}
 
-                        <div className="mt-4">
-                            {(orderStatus === "SHIPPED" || orderStatus === "DELIVERED" || orderStatus === "CANCELLED") || (
-                                <Button
-                                    type="primary"
-                                    className={"mt-2 " + getOrderStatusButtonClass(orderStatus)}
-                                    onClick={() => handleApproveOrder(orderId, orderTools)}
-                                >
-                                    {getOrderStatusButton(orderStatus)}
-                                </Button>
-                            )}
-                            <p className="mt-1 text-sm text-gray-600">{getOrderStatusTitle(orderStatus)}</p>
+                        <div className="flex justify-between items-center">
+                            {
+                                (
+                                    orderStatus === "SUCCESS" || orderStatus === "SHIPPED" ||
+                                    orderStatus === "DELIVERED" || orderStatus === "CANCELLED" ||
+                                    orderStatus === 'RETURN_REQUESTED' || orderStatus === 'RETURN_SUCCEEDED' ||
+                                    orderStatus === 'RETURN_REFUSED'
+
+                                )
+                                ||
+                                (
+                                    <Button
+                                        type="primary"
+                                        className={"mt-2 " + getOrderStatusButtonClass(orderStatus)}
+                                        onClick={() => handleApproveOrder(orderId, orderTools)}
+                                    >
+                                        {getOrderStatusButton(orderStatus)}
+                                    </Button>
+                                )
+                            }
+                            {
+                                (orderStatus === "RETURN_REQUESTED")
+                                &&
+                                (
+                                    <div>
+                                        <Button
+                                            type="primary"
+                                            className={"mt-2 " + getOrderStatusButtonClass(orderStatus) + " bg-green-500 hover:bg-green-700"}
+                                            onClick={() => handleAccept(orderId, orderTools)}
+                                        >
+                                            Chấp nhận
+                                        </Button>
+                                        <Button
+                                            type="primary"
+                                            className={"ml-2 mt-2 " + getOrderStatusButtonClass(orderStatus) + " bg-red-500 hover:bg-red-700"}
+                                            onClick={() => handleRefuse(orderId, orderTools)}
+                                        >
+                                            Từ chối
+                                        </Button>
+                                    </div>
+
+                                )
+                            }
+
+                            <Tag className="text-sm mt-2" color={getStatusColor(orderStatus)}>
+                                {getOrderStatusTitle(orderStatus)}
+                            </Tag>
                         </div>
                     </div>
                 );

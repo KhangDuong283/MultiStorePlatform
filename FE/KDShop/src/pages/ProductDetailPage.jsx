@@ -10,6 +10,8 @@ import { useCartContext } from "../components/CartProvider";
 import { useCreateCartTool } from "../features/cart/hooks/useCreateCartTool";
 import { useUpdateCartItem } from "../features/cart/hooks/useUpdateCartItem";
 import { useCheckExistCartTool } from "../features/cart/hooks/useCheckExistCartTool";
+import { truncateDescription } from "../utils/truncaseDesc";
+import { toast } from "react-toastify";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -17,10 +19,13 @@ const ProductDetailPage = () => {
     const { toolId } = useParams();
     const navigate = useNavigate();
     const { getToolByToolId, isLoadingTool, error } = useGetToolByToolId();
-    const { cartItems, setCartItems, cartQuantity, setCartQuantity } = useCartContext();
+    const {
+        cartItems, setCartItems,
+        cartQuantity, setCartQuantity,
+    } = useCartContext();
     const userId = useSelector(state => state?.account?.user?.id);
     const permissions = useSelector(state => state.account.user?.role?.permissions);
-    const { carts } = useCart(userId); // Fetch cart info
+    const { carts } = useCart(userId);
 
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -47,8 +52,8 @@ const ProductDetailPage = () => {
     };
 
     const onAddToCart = async () => {
-        console.log(quantity);
-        if (product && quantity > 0) { // Ensure quantity is valid
+        // console.log(quantity);
+        if (product && quantity > 0) {
             await handleAddToCart({
                 tool: product,
                 permissions,
@@ -65,18 +70,18 @@ const ProductDetailPage = () => {
         }
     };
 
-    const handleBuyNow = () => {
-        onAddToCart();
-        navigate('/checkout');
+
+
+    const handleBuyNow = async () => {
+        const buyNowItem = {
+            product,
+            quantity,
+            userId
+        }
+        navigate('/checkout', { state: { buyNowItem: buyNowItem } });
     };
 
-    const truncateDescription = (description, limit) => {
-        const words = description.split(" ");
-        if (words.length > limit) {
-            return words.slice(0, limit).join(" ") + "...";
-        }
-        return description;
-    };
+
 
     if (isLoadingTool) {
         return <div>Đang tải thông tin sản phẩm...</div>;
@@ -104,6 +109,10 @@ const ProductDetailPage = () => {
                         </Carousel>
                     </Col>
                     <Col xs={24} md={12}>
+                        {/* {console.log(product)} */}
+                        <Paragraph className="mt-2 text-lg font-bold">
+                            <Text className="text-gray-900 text-xl">{product.name}</Text>
+                        </Paragraph>
                         <Paragraph className="mt-2 text-lg font-bold">
                             Giá: {product.discountedPrice > 0 ? (
                                 <>
@@ -114,14 +123,25 @@ const ProductDetailPage = () => {
                                 <Text className="text-green-600">{product.price.toLocaleString()}₫</Text>
                             )}
                         </Paragraph>
-                        <Text className="text-gray-500">Kho: {product.stockQuantity} sản phẩm</Text>
+                        <Paragraph className="text-gray-500">Kho: {product.stockQuantity} sản phẩm</Paragraph>
 
+                        <Paragraph className="flex items-center">
+                            <Text className="font-bold text-black mr-1">Cửa hàng:</Text>
+                            <Text
+                                className="text-blue-400 hover:text-blue-700 font-semibold cursor-pointer scale-100 transition-all duration-200"
+                                // onClick={() => navigate(`/user/${product.user.userId}`)}
+                                onClick={() => toast.warn("Chức năng đang được phát triển.")}
+                            >
+                                {product.user.fullName}
+                            </Text>
+                        </Paragraph>
                         <Divider />
+
                         <Title level={5}>Mô tả sản phẩm</Title>
                         <Paragraph>
                             {showFullDescription
                                 ? product.description
-                                : truncateDescription(product.description, 100)}
+                                : truncateDescription(product.description, 80)}
                         </Paragraph>
                         {!showFullDescription && product.description.split(" ").length > 100 && (
                             <Button
@@ -140,7 +160,7 @@ const ProductDetailPage = () => {
                                     min={1}
                                     max={product.stockQuantity}
                                     value={quantity}
-                                    onChange={onQuantityChange} // Call our new handler
+                                    onChange={onQuantityChange}
                                     className="ml-2"
                                     style={{ width: "100px" }}
                                 />

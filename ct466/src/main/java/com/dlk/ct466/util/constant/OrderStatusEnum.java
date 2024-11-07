@@ -1,9 +1,7 @@
 package com.dlk.ct466.util.constant;
 
 import com.dlk.ct466.util.error.EnumNameNotValidException;
-import com.dlk.ct466.util.error.IdInvalidException;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 
@@ -15,8 +13,10 @@ public enum OrderStatusEnum {
     DELIVERED,          // Đơn hàng đã được giao
     CANCELLED,          // Đơn hàng đã bị hủy
     RETURN_REQUESTED,   // Khách hàng yêu cầu trả lại hàng
-    RETURNED,           // Hàng đã được chấp nhận trả lại thành công.
-    REFUNDED;           // Đơn hàng cần hoàn tiền
+    RETURN_SUCCEEDED,   // Hàng đã được chấp nhận trả lại thành công.
+    RETURN_REFUSED,    // Người bán đã từ chối yêu cầu trả hàng của bạn
+    REFUNDED,           // Đơn hàng cần hoàn tiền
+    SUCCESS;            // Đơn hàng đã hoàn thành
 
     @JsonCreator
     public static OrderStatusEnum fromValue(String value) {

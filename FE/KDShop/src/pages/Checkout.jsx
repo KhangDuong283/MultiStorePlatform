@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Layout, Card, Typography } from 'antd';
 import { useCartContext } from '../components/CartProvider';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useDeleteCartTool from '../features/cart/hooks/useDeleteCartTool';
 import CheckoutSummary from '../features/checkout/Components/CheckoutSummary';
 import CheckoutForm from '../features/checkout/Components/CheckoutForm';
@@ -16,6 +16,10 @@ const { Content } = Layout;
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const buyNowItem = location.state?.buyNowItem;
+    console.log(buyNowItem)
+
     const {
         cartItems, setCartItems,
         selectedItems, setSelectedItems,
@@ -34,13 +38,15 @@ const CheckoutPage = () => {
         setAddressUser(addresses);
     }, [addresses]);
 
-    const totalAmount = cartItems.reduce((total, item) =>
+    const totalAmount = cartItems?.reduce((total, item) =>
         selectedItems.includes(item.id) ?
             total + (item.discountPrice || item.price) * item.quantity :
             total
         , 0);
 
-    const shipCost = totalAmount > 500000 ? 0 : totalAmount * 0.05;
+    const amountBuyNow = buyNowItem.quantity * (buyNowItem.product.discountedPrice || buyNowItem.product.price)
+    const shipCostBuyNow = amountBuyNow * 0.05;
+    const shipCost = totalAmount * 0.05;
 
     const { deleteCartTool } = useDeleteCartTool();
 
@@ -51,7 +57,7 @@ const CheckoutPage = () => {
     const handleCheckout = async () => {
         const order = {
             status: "pending",
-            shippingCost: shipCost,
+            shippingCost: shipCost || shipCostBuyNow,
             user: {
                 userId: userId
             },
@@ -64,29 +70,42 @@ const CheckoutPage = () => {
         }
         const data = await createOrder(order);
         const orderId = data?.orderId;
-
-        const checkoutItem = cartItems.filter(item => selectedItems.includes(item.id));
-
-        let newOrderItems = {};
-        checkoutItem.forEach((item) => {
-            newOrderItems = {
-                quantity: item.quantity,
+        if (selectedItems.length == 0) {
+            let newOrderItem = {
+                quantity: buyNowItem.quantity,
                 order: { orderId },
-                tool: { toolId: item.toolId },
+                tool: { toolId: buyNowItem.product.toolId }
             }
-            createOrderTool(newOrderItems);
-            newOrderItems = {};
-        });
+            createOrderTool(newOrderItem);
+            newOrderItem = {}
+            navigate(-1)
+        }
+
+        if (selectedItems.length != 0) {
+            const checkoutItem = cartItems.filter(item => selectedItems.includes(item.id));
+
+            let newOrderItems = {};
+            checkoutItem.forEach((item) => {
+                newOrderItems = {
+                    quantity: item.quantity,
+                    order: { orderId },
+                    tool: { toolId: item.toolId },
+                }
+                createOrderTool(newOrderItems);
+                newOrderItems = {};
+            });
+
+            setCartItems((prevCartItems) => prevCartItems.filter(item => !checkoutItem.includes(item.id)));
+            selectedItems.forEach(itemId => deleteCartTool(itemId));
+
+            setCartQuantity(cartQuantity - selectedItems.length);
+            setSelectedItems([]);
+            navigate(-1);
+        }
 
 
-
-        setCartItems((prevCartItems) => prevCartItems.filter(item => !checkoutItem.includes(item.id)));
-        selectedItems.forEach(itemId => deleteCartTool(itemId));
-
-        setCartQuantity(cartQuantity - selectedItems.length);
-        setSelectedItems([]);
-        navigate(-1);
     };
+
 
 
     return (
@@ -96,8 +115,8 @@ const CheckoutPage = () => {
                     <Title level={3} className="text-center text-purple-700">Xác nhận Thanh toán</Title>
 
                     <CheckoutSummary
-                        totalAmount={totalAmount}
-                        shipCost={shipCost}
+                        totalAmount={totalAmount || amountBuyNow}
+                        shipCost={shipCost || shipCostBuyNow}
                     />
 
                     <CheckoutForm

@@ -7,7 +7,7 @@ export function useUpdateOrder() {
     const { mutate: updateOrder, isLoading: isUpdating } = useMutation({
         mutationKey: ["orders"],
         mutationFn: ({ orderId, orderUpdate }) => {
-            console.log(orderUpdate);
+            // console.log(orderUpdate);
             callUpdateOrderByOrderId(orderId, orderUpdate)
         },
         onSuccess: () => {

@@ -39,6 +39,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(user, id));
     }
 
+    @PostMapping("/user-role")
+    @ApiMessage("Update user role")
+    public ResponseEntity<Void> updateUserRole(@RequestBody User user) throws IdInvalidException {
+        return ResponseEntity.ok(userService.updateUserRole(user));
+    }
+
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a user")
     public ResponseEntity<Void> delete(@PathVariable("id") String id) throws IdInvalidException {

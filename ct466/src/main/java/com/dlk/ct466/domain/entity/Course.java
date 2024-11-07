@@ -37,12 +37,11 @@ public class Course extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
     User user;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    @JsonIgnore
-    List<CartCourse> cartCourses;
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    List<CartCourse> cartCourses;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @JsonIgnore

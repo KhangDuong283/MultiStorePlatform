@@ -1,135 +1,171 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { List, Skeleton, Typography, Button, Modal } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { List, Typography, Button, Modal, Divider } from "antd";
+import { ShoppingCartOutlined, PlayCircleOutlined, DollarOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { formatDurationToObject, formatDurationToString } from "../features/courses/hooks/formatDuration";
+import LoginModal from "../components/LoginModal";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
-const CourseDetail = ({ playlistId, apiKey }) => {
-    const [loading, setLoading] = useState(true);
-    const [videos, setVideos] = useState([]);
-    const [playlistInfo, setPlaylistInfo] = useState(null);
+const CourseDetail = () => {
     const [selectedVideo, setSelectedVideo] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    apiKey = "AIzaSyDjCUacTnv_xPxbjXxEia3GQTa-NlhGxRA";
-    playlistId = "PLp1vfj-6olW8lapBHPGT5gxFO5_NKTKsW";
-
-    useEffect(() => {
-        const fetchPlaylistData = async () => {
-            try {
-                const playlistResponse = await axios.get(
-                    `https://www.googleapis.com/youtube/v3/playlists`,
-                    {
-                        params: {
-                            part: "snippet",
-                            id: playlistId,
-                            key: apiKey,
-                        },
-                    }
-                );
-
-                const playlist = playlistResponse.data.items[0];
-                setPlaylistInfo({
-                    title: playlist.snippet.title,
-                    description: playlist.snippet.description,
-                });
-
-                const videosResponse = await axios.get(
-                    `https://www.googleapis.com/youtube/v3/playlistItems`,
-                    {
-                        params: {
-                            part: "snippet",
-                            playlistId: playlistId,
-                            maxResults: 50,
-                            key: apiKey,
-                        },
-                    }
-                );
-
-                const videoItems = videosResponse.data.items.map(item => ({
-                    id: item.snippet.resourceId.videoId,
-                    title: item.snippet.title,
-                    description: item.snippet.description,
-                    thumbnail: item.snippet.thumbnails.medium.url,
-                }));
-
-                setVideos(videoItems);
-                setLoading(false);
-            } catch (error) {
-                console.error("Lỗi khi tải dữ liệu playlist:", error);
-            }
-        };
-
-        fetchPlaylistData();
-    }, [playlistId, apiKey]);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { course } = location.state || {};
 
     const showVideo = (video) => {
         setSelectedVideo(video);
     };
 
+    const userId = useSelector(state => state?.account?.user?.id);
+
+    const handleAddToCart = () => {
+        if (userId == undefined || userId == null || userId == "") {
+            return setIsModalVisible(true);
+        }
+
+        toast.warn("Chức năng đang phát triển, vui lòng thử lại sau");
+
+    };
+
+    const handleBuyNow = () => {
+        if (userId == undefined || userId == null || userId == "") {
+            return setIsModalVisible(true);
+        }
+
+        navigate("/checkout", { state: { course } });
+    };
+
+    const publicDate = new Date(course.updatedAt || course.playlistDetails.publishedAt).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    })
+
+    const time = formatDurationToString(course.playlistDetails.totalDuration);
+
+
     return (
-        <div className="p-6 bg-white rounded-md shadow-md max-w-4xl mx-auto">
-            {loading ? (
-                <Skeleton active />
-            ) : (
-                <>
-                    <Typography.Title level={2} className="text-blue-600">{playlistInfo?.title}</Typography.Title>
-                    <Typography.Paragraph className="text-gray-600 mb-6">{playlistInfo?.description}</Typography.Paragraph>
+        <div className="p-6 bg-white rounded-md shadow-md max-w-4xl mx-auto space-y-6">
+            {/* Course Header */}
+            <Typography.Title level={2} className="text-blue-600">{course.playlistDetails.title}</Typography.Title>
+            <Typography.Paragraph className="text-gray-600">
+                {course.playlistDetails.description}
+            </Typography.Paragraph>
 
-                    <List
-                        itemLayout="horizontal"
-                        dataSource={videos}
-                        className="space-y-4"
-                        renderItem={(video) => (
-                            <List.Item
-                                key={video.id}
-                                className="hover:bg-gray-100 rounded-lg p-3"
-                                actions={[
-                                    <Button
-                                        key={`button-${video.id}`}
-                                        type="primary"
-                                        icon={<PlayCircleOutlined />}
-                                        onClick={() => showVideo(video)}
-                                        className="bg-blue-500 hover:bg-blue-600 border-none"
-                                    >
-                                        Xem video
-                                    </Button>,
-                                ]}
-                            >
-                                <List.Item.Meta
-                                    avatar={<img src={video.thumbnail} alt={video.title} className="w-20 h-20 rounded-md object-cover" />}
-                                    title={<Typography.Text strong>{video.title}</Typography.Text>}
-                                    description={<Typography.Paragraph ellipsis className="text-gray-500">{video.description}</Typography.Paragraph>}
-                                />
-                            </List.Item>
+            {/* Course Info Section */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between bg-gray-50 p-4 rounded-md shadow-md mb-6">
+                <div className="flex flex-col space-y-2">
+                    <Typography.Text className="text-xl font-semibold text-red-500">
+                        {course.discountedPrice || course.price} đ
+                        {course.discountedPrice && (
+                            <span className="line-through text-gray-500 ml-2">{course.price} đ</span>
                         )}
-                    />
-
-                    <Modal
-                        title={<Typography.Title level={4} className="text-blue-600">{selectedVideo?.title}</Typography.Title>}
-                        open={!!selectedVideo}
-                        footer={null}
-                        onCancel={() => setSelectedVideo(null)}
-                        width={800}
-                        style={{ body: { padding: 0 } }}
-                        className="rounded-md overflow-hidden"
+                    </Typography.Text>
+                    <Typography.Text className="text-gray-700">Được tạo bởi: {course.user.fullName}</Typography.Text>
+                    <Typography.Text className="text-gray-700">Tác giả: {course.playlistDetails.channelTitle}</Typography.Text>
+                    <Typography.Text className="text-gray-700">Cập nhật lần cuối: {publicDate}</Typography.Text>
+                    <Typography.Text className="text-gray-700">Tổng thời lượng: {time}</Typography.Text>
+                    <Typography.Text className="text-gray-700">Số bài giảng: {course.playlistDetails.videos.length}</Typography.Text>
+                </div>
+                <div className="flex space-x-4 mt-4 lg:mt-0 lg:ml-4">
+                    <Button
+                        type="primary"
+                        icon={<ShoppingCartOutlined />}
+                        onClick={handleAddToCart}
+                        className="bg-blue-500 hover:bg-blue-600"
                     >
-                        {selectedVideo && (
-                            <div className="video-container">
-                                <iframe
-                                    width="100%"
-                                    height="450"
-                                    src={`https://www.youtube.com/embed/${selectedVideo.id}`}
-                                    title={selectedVideo.title}
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="rounded-b-md"
-                                ></iframe>
-                            </div>
-                        )}
-                    </Modal>
-                </>
-            )}
+                        Thêm vào giỏ hàng
+                    </Button>
+                    <Button
+                        type="primary"
+                        icon={<DollarOutlined />}
+                        onClick={handleBuyNow}
+                        className="bg-green-500 hover:bg-green-600"
+                    >
+                        Mua ngay
+                    </Button>
+                </div>
+            </div>
+
+            <Divider />
+
+            {/* Video List */}
+            <List
+                itemLayout="horizontal"
+                dataSource={course.playlistDetails.videos}
+                renderItem={(video) => {
+                    const { hours, minutes, seconds } = formatDurationToObject(video.duration);
+                    return (
+                        <List.Item
+                            key={video.videoId}
+                            className="hover:bg-gray-100 rounded-lg p-3 transition-all duration-200"
+                            actions={[
+                                <Button
+                                    key={video.id}
+                                    type="primary"
+                                    icon={<PlayCircleOutlined />}
+                                    onClick={() => showVideo(video)}
+                                    className="bg-blue-500 hover:bg-blue-600 border-none"
+                                >
+                                    Xem video
+                                </Button>,
+                                <div key={video.id} className="w-10">
+                                    {hours > 0 ? hours + ":" : ""}
+                                    {minutes > 0 ? minutes : "00"}:
+                                    {seconds < 10 ? "0" + seconds : seconds}
+                                </div>
+                            ]}
+                        >
+                            <List.Item.Meta
+                                avatar={<img src={video.thumbnail} alt={video.title} className="w-20 h-20 rounded-md object-cover" />}
+                                title={<Typography.Text strong>{video.title}</Typography.Text>}
+                                description={
+                                    <Typography.Paragraph
+                                        ellipsis={{ rows: 2, expandable: false }}
+                                        className="text-gray-500"
+                                    >
+                                        {video.description}
+                                    </Typography.Paragraph>
+                                }
+                            />
+                        </List.Item>
+                    )
+                }}
+            />
+
+            {/* Video Modal */}
+            <Modal
+                title={<Typography.Title level={4} className="text-blue-600">{selectedVideo?.title}</Typography.Title>}
+                open={!!selectedVideo}
+                footer={null}
+                onCancel={() => setSelectedVideo(null)}
+                width={800}
+                className="rounded-md overflow-hidden"
+            >
+                {selectedVideo && (
+                    <div className="video-container">
+                        <iframe
+                            width="100%"
+                            height="450"
+                            src={`https://www.youtube.com/embed/${selectedVideo.videoId}`}
+                            title={selectedVideo.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="rounded-b-md"
+                        ></iframe>
+                    </div>
+                )}
+            </Modal>
+
+            <LoginModal
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            />
         </div>
+
     );
 };
 

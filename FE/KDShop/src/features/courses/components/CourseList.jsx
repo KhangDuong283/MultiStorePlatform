@@ -5,13 +5,13 @@ import CourseItem from "./CourseItem";
 const CourseList = () => {
     const { courses, isLoadingCourses } = useGetAllCourse()
     const courseData = courses?.result;
-
+    // console.log(courseData);
     const { playlistsDetails, isLoading, error } = usePlaylistsDetails(courseData);
 
     if (isLoading || isLoadingCourses) {
         return (
             <div className="text-center py-6">
-                <span>Đang tải khóa học...</span>
+                <span>Đang tải dữ liệu khóa học...</span>
             </div>
         );
     }

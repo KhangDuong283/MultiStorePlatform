@@ -77,7 +77,7 @@ public class UserService {
         user.setPassword(hashPassword);
 
         if (user.getRole() == null || user.getRole().getRoleId() == 0) {
-            Role buyerRole = roleService.fetchById(2);
+            Role buyerRole = roleService.fetchById(3);
             user.setRole(buyerRole);
         } else {
             Role userRole = roleService.fetchById(user.getRole().getRoleId());
@@ -146,4 +146,12 @@ public class UserService {
     }
 
 
+    public Void updateUserRole(User user) throws IdInvalidException {
+        System.out.println(user);
+        User dbUser = fetchUserById(user.getUserId());
+        Role userRole = roleService.fetchById(user.getRole().getRoleId());
+        dbUser.setRole(userRole);
+        userRepository.save(dbUser);
+        return null;
+    }
 }

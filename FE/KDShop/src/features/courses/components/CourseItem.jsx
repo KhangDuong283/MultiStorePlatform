@@ -2,8 +2,10 @@
 import { Card } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginModal from "./LoginModal";
+import LoginModal from "../../../components/LoginModal";
 import CourseOverlay from "./CourseOvelay";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const { Meta } = Card;
 
@@ -11,27 +13,21 @@ const CourseItem = ({ course }) => {
     const navigate = useNavigate();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-
+    const userId = useSelector(state => state?.account?.user?.id);
 
     const onAddToCartClick = () => {
-        // Kiểm tra xem người dùng đã đăng nhập chưa
+        if (userId == undefined || userId == null || userId == "") {
+            return setIsModalVisible(true);
+        }
 
+        toast.warn("Chức năng đang phát triển, vui lòng thử lại sau");
 
-        // Hiển thị modal yêu cầu đăng nhập khi chưa login
-        setIsModalVisible(true);
     };
 
-    const handleLogin = () => {
-        setIsModalVisible(false);
-        navigate("/auth/login");
-    };
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     const navigateToDetailPage = () => {
-        navigate(`/course-detail/${course.courseId}`);
+        navigate("/course-detail", { state: { course: course } });
     };
 
     return (
@@ -54,6 +50,7 @@ const CourseItem = ({ course }) => {
                 }
             >
                 <Meta
+                    style={{ height: '14vh' }}
                     title={
                         <span
                             className="text-base cursor-pointer text-two-lines"
@@ -91,6 +88,8 @@ const CourseItem = ({ course }) => {
                         description={course.playlistDetails.description}
                         updatedAt={course.updatedAt}
                         publishedAt={course.playlistDetails.publishedAt}
+                        course={course}
+                        navigateToDetailPage={navigateToDetailPage}
                     // price={course.price}
                     // discountedPrice={course.discountedPrice}
                     />
@@ -99,8 +98,7 @@ const CourseItem = ({ course }) => {
 
             <LoginModal
                 isModalVisible={isModalVisible}
-                handleLogin={handleLogin}
-                handleCancel={handleCancel}
+                setIsModalVisible={setIsModalVisible}
             />
         </>
     );

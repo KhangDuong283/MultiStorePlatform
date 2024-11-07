@@ -69,11 +69,11 @@ const ProductTable = ({ tools, onEdit, onDelete, isDeleting }) => {
             key: "action",
             align: "center",
             render: (text, tool) => (
-                <div className="flex space-x-2">
+                <div className="flex justify-center items-center space-x-2">
                     <Button onClick={() => onEdit(tool)} className="bg-green-500 hover:bg-green-600 text-white">
                         Sửa
                     </Button>
-                    <Button disabled={isDeleting} danger onClick={() => onDelete(tool.toolId)} className="bg-red-500 hover:bg-red-600 text-red">
+                    <Button disabled={isDeleting} onClick={() => onDelete(tool.toolId)} className="bg-red-500 hover:bg-red-600 text-white">
                         {isDeleting ? "Đang xóa" : "Xóa"}
                     </Button>
                 </div>
