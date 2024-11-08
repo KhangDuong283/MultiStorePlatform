@@ -2,6 +2,7 @@ package com.dlk.ct466.domain.response.order;
 
 import com.dlk.ct466.domain.entity.User;
 import com.dlk.ct466.util.constant.OrderStatusEnum;
+import com.dlk.ct466.util.constant.OrderType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -26,6 +27,7 @@ public class ResOrderDTO {
     String createdBy;
     Instant updatedAt;
     String updatedBy;
+    OrderType type;
 
     @Data
     @NoArgsConstructor

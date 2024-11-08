@@ -1,6 +1,7 @@
 package com.dlk.ct466.domain.entity;
 
 import com.dlk.ct466.util.constant.OrderStatusEnum;
+import com.dlk.ct466.util.constant.OrderType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -43,6 +44,8 @@ public class Order extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "address_id")
     Address address;
+
+    OrderType type;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     List<OrderTool> orderTools;

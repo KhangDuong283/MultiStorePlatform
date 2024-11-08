@@ -42,6 +42,7 @@ public class OrderMapper {
                 .paymentMethod(paymentMethodOrder)
                 .createdAt(order.getCreatedAt())
                 .createdBy(order.getCreatedBy())
+                .type(order.getType())
                 .build();
     }
 
@@ -112,6 +113,7 @@ public class OrderMapper {
                 .createdBy(order.getCreatedBy())
                 .updatedAt(order.getCreatedAt())
                 .updatedBy(order.getCreatedBy())
+                .type(order.getType())
                 .build();
     }
 }
