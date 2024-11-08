@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useCreateOrder } from "../hooks/useCreateOrder";
 import { useSelector } from "react-redux";
 import { useAddressUser } from "../hooks/useAddressUser";
+import { useCreateOrderCourse } from "../../seller/hooks/useCreateOrderCourse";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -20,7 +21,9 @@ const OnlinePayment = () => {
 
     const { addresses } = useAddressUser(userId)
     const addressId = addresses?.[0].addressId;
+
     const { createOrder } = useCreateOrder();
+    const { createOrderCourse } = useCreateOrderCourse();
     const handlePaymentSubmit = async () => {
         const courseOrder = {
             status: "SUCCESS",
@@ -36,7 +39,16 @@ const OnlinePayment = () => {
             }
         }
         const res = await createOrder(courseOrder)
-        console.log(res.orderId);
+        const orderId = res.orderId;
+        const orderCourse = {
+            order: {
+                orderId
+            },
+            course: {
+                courseId: course.courseId
+            }
+        }
+        await createOrderCourse(orderCourse)
 
         toast.success("Thanh toán thành công");
     };

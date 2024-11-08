@@ -18,8 +18,8 @@ const OrderHistory = () => {
 
     const userId = useSelector(state => state?.account?.user?.id);
     const { orders, isLoading } = useGetOrderByUserId(userId);
-
     const { getToolByToolId, isLoadingTool } = useGetToolByToolId();
+    console.log(orders)
 
     // Hàm tính toán tổng tiền cho đơn hàng
     const calculateTotalAmount = (orderItems) => {

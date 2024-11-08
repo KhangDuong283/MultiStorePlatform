@@ -45,6 +45,7 @@ public class OrderCourseService {
         orderCourse = existOrderCourse.orElseGet(() -> OrderCourse.builder()
                 .order(order)
                 .course(course)
+                .quantity(1)
                 .build());
 
         return orderCourseRepository.save(orderCourse);

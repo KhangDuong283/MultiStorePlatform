@@ -17,8 +17,7 @@ const { Content } = Layout;
 const CheckoutPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const buyNowItem = location.state?.buyNowItem;
-    // console.log(buyNowItem)
+    const buyNowItem = location.state?.buyNowItem || {};
 
     const {
         cartItems, setCartItems,
@@ -38,13 +37,15 @@ const CheckoutPage = () => {
         setAddressUser(addresses);
     }, [addresses]);
 
-    const totalAmount = cartItems?.reduce((total, item) =>
+    console.log(cartItems)
+    const totalAmount = cartItems?.reduce((total, item) => {
         selectedItems.includes(item.id) ?
             total + (item.discountPrice || item.price) * item.quantity :
             total
-        , 0);
+            , 0
+    });
 
-    const amountBuyNow = buyNowItem.quantity * (buyNowItem.product.discountedPrice || buyNowItem.product.price)
+    const amountBuyNow = (buyNowItem?.quantity || 1) * (buyNowItem?.product?.discountedPrice || buyNowItem?.product?.price || 0) || 0;
     const shipCostBuyNow = amountBuyNow * 0.05;
     const shipCost = totalAmount * 0.05;
 

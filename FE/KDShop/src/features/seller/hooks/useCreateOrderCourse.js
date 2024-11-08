@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 export function useCreateOrderCourse() {
     const queryClient = useQueryClient()
-    const { mutate: createOrderCourse, isLoading, error } = useMutation({
+    const { mutateAsync: createOrderCourse, isLoading, error } = useMutation({
         mutationFn: (orderCourse) => callCreateOrderCourse(orderCourse),
         onSuccess: (data) => {
             queryClient.invalidateQueries("orderCourses");

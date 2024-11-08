@@ -21,9 +21,13 @@ public class OrderCourse extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     String orderCourseId;
 
+    @Column(nullable = false)
+    @NotNull(message = "Quantity could not be null")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    int quantity;
+
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnore
     Order order;
 
     @ManyToOne
