@@ -24,7 +24,8 @@ import OrderManagement from "../features/seller/components/OrderManagement";
 import CourseManagement from "../features/seller/components/CourseManagement";
 import Statistics from "../features/seller/components/Statistics";
 import CoursePage from "../pages/CoursePage";
-import CourseDetail from "../pages/VideoPlayList";
+import CourseDetail from "../features/courses/components/VideoPlayList";
+import OnlinePayment from "../features/checkout/Components/OnlinePayment";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
             {
                 path: "checkout",
                 element: <CheckoutPage />,
+            },
+            {
+                path: "online-payment",
+                element: <OnlinePayment />
             },
             {
                 path: "order-history",

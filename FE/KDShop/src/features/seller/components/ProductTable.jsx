@@ -2,6 +2,7 @@ import { Table, Button } from "antd";
 import { TOOL_URL } from "../../../utils/Config";
 
 const ProductTable = ({ tools, onEdit, onDelete, isDeleting }) => {
+    // console.log(tools)
     const columns = [
         {
             title: "Tên sản phẩm",
@@ -44,7 +45,7 @@ const ProductTable = ({ tools, onEdit, onDelete, isDeleting }) => {
             title: "Giá khuyến mãi",
             dataIndex: "discountedPrice",
             key: "discountedPrice",
-            width: "6rem",
+            width: "10rem",
             align: "center",
             render: (text) => text ? `${text.toLocaleString()}đ` : "Không có"
         },
@@ -87,6 +88,7 @@ const ProductTable = ({ tools, onEdit, onDelete, isDeleting }) => {
             dataSource={tools}
             rowKey="toolId"
             columns={columns}
+            pagination={{ pageSize: 3 }}
         />
     );
 };

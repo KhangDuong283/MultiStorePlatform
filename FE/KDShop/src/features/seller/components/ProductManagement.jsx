@@ -45,8 +45,8 @@ const ProductManagement = () => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-semibold mb-4 text-center">Quản lý sản phẩm</h1>
+        <div className="p-3">
+            <h1 className="text-2xl font-semibold mb-3 text-center">Quản lý sản phẩm</h1>
             <Button onClick={openCreateModal} type="primary" className="mb-3">
                 Thêm sản phẩm
             </Button>

@@ -32,12 +32,16 @@ public class CourseService {
         );
     }
 
-    public Course getCourseByCourseUrl(String courseUrl) throws IdInvalidException {
+    public Course getCourseByCourseUrlAdmin(String courseUrl)  {
         return courseRepository.findByCourseUrl(courseUrl).orElse(null);
     }
 
+    public Course courseGetCourseByCourseUrlNotDeleted(String courseUrl)  {
+        return courseRepository.findByCourseUrlAndDeletedFalse(courseUrl).orElse(null);
+    }
+
     public Course createCourse(ReqCourseDTO course) throws IdInvalidException {
-        Course dbCourse = getCourseByCourseUrl(course.getCourseUrl());
+        Course dbCourse = courseGetCourseByCourseUrlNotDeleted(course.getCourseUrl());
         if (dbCourse != null) {
              throw new IdInvalidException("Course already exist");
         }
@@ -62,4 +66,31 @@ public class CourseService {
     }
 
 
+    public Course getCourseByPlaylistId(String playListId) {
+        String playlistUrl = "https://www.youtube.com/playlist?list=" + playListId;
+        return courseGetCourseByCourseUrlNotDeleted(playlistUrl);
+    }
+
+    public Course updateCourse(String courseId, Course course) throws IdInvalidException {
+        Course dbCourse = getCourseById(courseId);
+        dbCourse.setCourseUrl(course.getCourseUrl());
+        dbCourse.setPrice(course.getPrice());
+        dbCourse.setDiscountedPrice(course.getDiscountedPrice());
+        return courseRepository.save(dbCourse);
+    }
+
+    public void deleteCourse(String courseId) throws IdInvalidException {
+        Course dbCourse = getCourseById(courseId);
+        dbCourse.setDeleted(true);
+        courseRepository.save(dbCourse);
+    }
+
+    public ResPaginationDTO getAllCourseByUser(String userId, Pageable pageable) {
+        FilterNode node = filterParser.parse("deleted=false and user.id='" + userId + "'");
+
+        FilterSpecification<Course> spec = filterSpecificationConverter.convert(node);
+
+        Page<Course> pageCourse = courseRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageCourse, pageable);
+    }
 }

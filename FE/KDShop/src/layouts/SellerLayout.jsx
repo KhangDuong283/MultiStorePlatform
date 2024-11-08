@@ -10,7 +10,7 @@ const SellerLayout = () => {
     return (
         <Layout style={{ minHeight: "100vh" }}>
             <SellerNavbar collapsed={collapsed} setCollapsed={setCollapsed} />
-            <Layout style={{ marginLeft: collapsed ? 80 : 200, marginTop: "1.2rem" }}>
+            <Layout style={{ marginLeft: collapsed ? 80 : 200, marginTop: "0.1rem" }}>
                 <CardContainer>
                     <Outlet />
                 </CardContainer>

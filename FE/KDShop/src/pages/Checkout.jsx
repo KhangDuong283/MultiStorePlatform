@@ -18,7 +18,7 @@ const CheckoutPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const buyNowItem = location.state?.buyNowItem;
-    console.log(buyNowItem)
+    // console.log(buyNowItem)
 
     const {
         cartItems, setCartItems,

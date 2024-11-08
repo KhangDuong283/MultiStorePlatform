@@ -66,7 +66,7 @@ const CourseItem = ({ course }) => {
                                     <>
                                         <span className="text-gray-500 line-through">
                                             {course.price.toLocaleString()}₫
-                                        </span>
+                                        </span>{" "}
                                         {course.discountedPrice.toLocaleString()}₫
                                     </>
                                 ) : (

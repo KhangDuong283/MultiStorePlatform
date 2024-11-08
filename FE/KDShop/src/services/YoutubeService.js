@@ -1,31 +1,77 @@
 import axios from "axios";
-import { getPlaylistId } from "../utils/getPlayListId";
 import { parseDuration } from "../features/courses/hooks/formatDuration";
+import { toast } from "react-toastify";
 
 const API_KEY_YOUTUBE = 'AIzaSyDjCUacTnv_xPxbjXxEia3GQTa-NlhGxRA';
 
-// Hàm lấy thông tin một playlist
-async function fetchPlaylistDetails(playlistUrl) {
+// Hàm lấy id từ url playlist
+export function getPlaylistId(url) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:playlist\?list=|(?:.*\/)?(?:p|list)\/))([\w-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
+// Hàm xây dựng URL API YouTube
+function buildApiUrl(type, params) {
+    const baseUrl = "https://www.googleapis.com/youtube/v3";
+    return `${baseUrl}/${type}?${new URLSearchParams({ ...params, key: API_KEY_YOUTUBE }).toString()}`;
+}
+
+// Hàm lấy thời lượng của video
+async function fetchVideoDuration(videoId) {
+    const url = buildApiUrl("videos", { part: "contentDetails", id: videoId });
+    const response = await axios.get(url);
+    const videoDetails = response.data;
+
+    if (videoDetails.items && videoDetails.items.length > 0) {
+        const videoDuration = videoDetails.items[0].contentDetails.duration;
+        return parseDuration(videoDuration);
+    }
+    return 0;
+}
+
+// Hàm kiểm tra playlist có tồn tại không
+export async function checkIfPlaylistExists(playlistUrl) {
     const playlistId = getPlaylistId(playlistUrl);
 
     if (!playlistId) {
-        throw new Error('Url không đúng định dạng');
+        // toast.error("URL không đúng định dạng");
+        return false;
     }
 
-    const playlistApiUrl = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id=${playlistId}&key=${API_KEY_YOUTUBE}`;
-    const videoApiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY_YOUTUBE}`;
+    const url = buildApiUrl("playlists", { part: "id", id: playlistId });
+
+    try {
+        const response = await axios.get(url);
+        return response.data.items && response.data.items.length > 0;
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            // toast.error("Playlist không tồn tại");
+            return false;
+        }
+    }
+}
+
+// Hàm lấy thông tin một playlist
+export async function fetchPlaylistDetails(playlistUrl) {
+    const playlistId = getPlaylistId(playlistUrl);
+
+    if (!playlistId) {
+        toast.error("URL không đúng định dạng");
+    }
+
+    const playlistApiUrl = buildApiUrl("playlists", { part: "snippet,contentDetails", id: playlistId });
+    const videoApiUrl = buildApiUrl("playlistItems", { part: "snippet", maxResults: 50, playlistId });
 
     try {
         // Lấy thông tin playlist
         const playlistResponse = await axios.get(playlistApiUrl);
         const playlistData = playlistResponse.data;
 
-        if (!playlistData.items || playlistData.items.length === 0) {
-            throw new Error("Không tìm thấy playlist");
-        }
+        // if (!playlistData.items || playlistData.items.length === 0)
+        //     toast.error("Không tìm thấy playlist");
 
         const playlist = playlistData.items[0];
-        // console.log(playlist);
         const playlistDetails = {
             title: playlist.snippet.title,
             description: playlist.snippet.description,
@@ -40,7 +86,6 @@ async function fetchPlaylistDetails(playlistUrl) {
         // Lấy thông tin các video trong playlist
         const videoResponse = await axios.get(videoApiUrl);
         const videoData = videoResponse.data;
-        // console.log(videoData);
 
         let totalDurationInSeconds = 0;
 
@@ -55,24 +100,14 @@ async function fetchPlaylistDetails(playlistUrl) {
                     duration: 0,
                 };
 
-                // Lấy thời gian của video
-                const videoDetailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${video.videoId}&key=${API_KEY_YOUTUBE}`;
-                const videoDetailsResponse = await axios.get(videoDetailsUrl);
-                const videoDetails = videoDetailsResponse.data;
-                // console.log(videoDetails);
-
-                if (videoDetails.items && videoDetails.items.length > 0) {
-                    const videoDuration = videoDetails.items[0].contentDetails.duration;
-                    const videoDurationInSeconds = parseDuration(videoDuration);
-                    video.duration = videoDurationInSeconds;
-                    totalDurationInSeconds += videoDurationInSeconds;
-                }
+                // Gọi hàm fetchVideoDuration để lấy thời gian của video
+                video.duration = await fetchVideoDuration(video.videoId);
+                totalDurationInSeconds += video.duration;
 
                 playlistDetails.videos.push(video);
             }
         }
 
-        // Lưu tổng thời gian playlist
         playlistDetails.totalDuration = totalDurationInSeconds;
 
         return playlistDetails;
@@ -81,8 +116,7 @@ async function fetchPlaylistDetails(playlistUrl) {
     }
 }
 
-
-// lấy thông tin chi tiết của tất cả playlist 
+// Hàm lấy thông tin chi tiết của tất cả playlist
 export async function fetchAllPlaylistDetails(allPlayList) {
     const courseUrls = allPlayList.map(course => course.courseUrl);
     const allPlaylistDetails = [];
@@ -100,4 +134,22 @@ export async function fetchAllPlaylistDetails(allPlayList) {
     }
 
     return allPlaylistDetails;
+}
+
+// Hàm lấy tên playlist từ url
+export async function fetchPlaylistTitle(playlistUrl) {
+    const playlistId = getPlaylistId(playlistUrl);
+    const playlistApiUrl = buildApiUrl("playlists", { part: "snippet", id: playlistId });
+
+    const response = await axios.get(playlistApiUrl);
+    const playlistData = response.data;
+
+    return playlistData.items[0].snippet.title;
+}
+
+import custom_axios from "./axios-customize";
+export async function callCheckUrlExistInDb(playlistId) {
+    const res = await custom_axios.get(`/api/v1/courses/playlistId/${playlistId}`);
+    // console.log(res);
+    return res?.data;
 }

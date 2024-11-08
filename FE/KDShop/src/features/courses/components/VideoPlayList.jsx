@@ -2,66 +2,67 @@ import { List, Typography, Button, Modal, Divider } from "antd";
 import { ShoppingCartOutlined, PlayCircleOutlined, DollarOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { formatDurationToObject, formatDurationToString } from "../features/courses/hooks/formatDuration";
-import LoginModal from "../components/LoginModal";
+import { formatDurationToObject, formatDurationToString } from "../hooks/formatDuration";
+import LoginModal from "../../../components/LoginModal";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const CourseDetail = () => {
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [showFullDescription, setShowFullDescription] = useState(false);
 
-    const location = useLocation();
     const navigate = useNavigate();
+    const location = useLocation();
     const { course } = location.state || {};
 
-    const showVideo = (video) => {
-        setSelectedVideo(video);
-    };
-
+    const showVideo = (video) => setSelectedVideo(video);
     const userId = useSelector(state => state?.account?.user?.id);
 
     const handleAddToCart = () => {
-        if (userId == undefined || userId == null || userId == "") {
-            return setIsModalVisible(true);
-        }
-
+        if (!userId) return setIsModalVisible(true);
         toast.warn("Chức năng đang phát triển, vui lòng thử lại sau");
-
     };
 
     const handleBuyNow = () => {
-        if (userId == undefined || userId == null || userId == "") {
-            return setIsModalVisible(true);
-        }
-
-        navigate("/checkout", { state: { course } });
+        if (!userId) return setIsModalVisible(true);
+        navigate("/online-payment", { state: { course: course } });
     };
 
     const publicDate = new Date(course.updatedAt || course.playlistDetails.publishedAt).toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
-    })
+    });
 
     const time = formatDurationToString(course.playlistDetails.totalDuration);
 
+    const handleExpandDesc = () => setShowFullDescription(prev => !prev);
 
     return (
         <div className="p-6 bg-white rounded-md shadow-md max-w-4xl mx-auto space-y-6">
-            {/* Course Header */}
             <Typography.Title level={2} className="text-blue-600">{course.playlistDetails.title}</Typography.Title>
-            <Typography.Paragraph className="text-gray-600">
+            <Typography.Paragraph
+                ellipsis={showFullDescription ? false : { rows: 3 }}
+                className="text-gray-500"
+                forceRender
+            >
                 {course.playlistDetails.description}
             </Typography.Paragraph>
+            <div
+                onClick={handleExpandDesc}
+                className="text-blue-800 text-base cursor-pointer"
+            >
+                {showFullDescription ? "Thu gọn" : "Xem thêm"}
+            </div>
 
-            {/* Course Info Section */}
+            {/* Course Info  */}
             <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between bg-gray-50 p-4 rounded-md shadow-md mb-6">
                 <div className="flex flex-col space-y-2">
                     <Typography.Text className="text-xl font-semibold text-red-500">
-                        {course.discountedPrice || course.price} đ
+                        {(course.discountedPrice || course.price).toLocaleString()}đ
                         {course.discountedPrice && (
-                            <span className="line-through text-gray-500 ml-2">{course.price} đ</span>
+                            <span className="line-through text-gray-500 ml-2">{course.price.toLocaleString()}đ</span>
                         )}
                     </Typography.Text>
                     <Typography.Text className="text-gray-700">Được tạo bởi: {course.user.fullName}</Typography.Text>
@@ -136,7 +137,6 @@ const CourseDetail = () => {
                 }}
             />
 
-            {/* Video Modal */}
             <Modal
                 title={<Typography.Title level={4} className="text-blue-600">{selectedVideo?.title}</Typography.Title>}
                 open={!!selectedVideo}
@@ -165,7 +165,6 @@ const CourseDetail = () => {
                 setIsModalVisible={setIsModalVisible}
             />
         </div>
-
     );
 };
 

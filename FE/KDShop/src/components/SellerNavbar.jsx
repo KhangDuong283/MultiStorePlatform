@@ -6,6 +6,7 @@ import {
     OrderedListOutlined,
     BarChartOutlined,
     BookOutlined,
+    RollbackOutlined
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -38,6 +39,11 @@ const SellerNavbar = ({ collapsed, setCollapsed }) => {
             key: "/seller/statistics",
             icon: <BarChartOutlined />,
             label: <Link to="/seller/statistics">Thống kê</Link>,
+        },
+        {
+            key: "/",
+            icon: <RollbackOutlined />,
+            label: <Link to="/">Go back</Link>,
         },
     ];
 

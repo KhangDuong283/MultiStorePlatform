@@ -6,7 +6,7 @@ export function useDeleteTool() {
     const queryClient = useQueryClient();
 
     const { mutate: deleteTool, isLoading: isDeleting } = useMutation({
-        mutationFn: (toolId) => callDeleteTool(toolId),
+        mutationFn: callDeleteTool,
         onSuccess: () => {
             queryClient.invalidateQueries(["tools"]);
             toast.success("Xóa sản phẩm thành công!");

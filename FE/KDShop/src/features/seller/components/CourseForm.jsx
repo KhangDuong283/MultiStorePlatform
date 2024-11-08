@@ -1,9 +1,8 @@
 import { Modal, Form, Input, InputNumber, Button } from "antd";
 import { useEffect } from "react";
 
-const CourseForm = ({ userId, visible, onCancel, onSubmit, editingCourse }) => {
+const CourseForm = ({ userId, visible, onCancel, onSubmit, editingCourse, isCreatingCourse }) => {
     const [form] = Form.useForm();
-
     useEffect(() => {
         if (visible) {
             if (editingCourse) {
@@ -15,11 +14,21 @@ const CourseForm = ({ userId, visible, onCancel, onSubmit, editingCourse }) => {
     }, [editingCourse, form, visible]);
 
     const handleCreateOrUpdate = async (values) => {
-        const courseData = {
-            ...values,
-            userId: userId,
-        };
-        await onSubmit(courseData);
+
+        if (editingCourse !== null) {
+            const courseDataUpdate = {
+                ...values,
+                userId: userId,
+                courseId: editingCourse.courseId || null,
+            };
+            await onSubmit(courseDataUpdate);
+        } else {
+            const courseDataCreate = {
+                ...values,
+                userId: userId,
+            }
+            await onSubmit(courseDataCreate);
+        }
         form.resetFields();
     };
 
@@ -36,7 +45,7 @@ const CourseForm = ({ userId, visible, onCancel, onSubmit, editingCourse }) => {
                 layout="vertical"
             >
                 <Form.Item
-                    label="URL Khóa học"
+                    label="URL playlist youtube"
                     name="courseUrl"
                     rules={[{ required: true, message: "Vui lòng nhập URL khóa học!" }]}
                 >
@@ -59,7 +68,8 @@ const CourseForm = ({ userId, visible, onCancel, onSubmit, editingCourse }) => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="w-full">
+                    <Button type="primary" htmlType="submit" className="w-full" disabled={isCreatingCourse}>
+                        {isCreatingCourse && "Đang tiến hành "}
                         {editingCourse ? "Cập nhật" : "Thêm"}
                     </Button>
                 </Form.Item>

@@ -38,7 +38,7 @@ const CourseOverlay = ({ navigateToDetailPage, updatedAt, publishedAt, totalVide
                 {description && (
                     <p className="text-sm mt-2 text-gray-600">
                         <span className="font-semibold">Mô tả: </span>
-                        {description.length > 150 ? `${description.substring(0, 150)}...` : description}
+                        {description.length > 150 ? `${description.substring(0, 80)}...` : description}
                     </p>
                 )}
             </div>

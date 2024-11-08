@@ -1,3 +1,4 @@
+import { Spin } from "antd";
 import { useTools } from "../hooks/useTools";
 import ToolItem from "./ToolItem";
 
@@ -5,7 +6,13 @@ const ToolList = () => {
     const { isLoading, error, tools } = useTools();
 
     if (isLoading) {
-        return <div className="text-center">Đang tải dữ liệu sản phẩm...</div>;
+        return (
+            <div className="text-center py-6">
+                <Spin tip="Đang tải dữ liệu sản phảm..." size="large" >
+                    <div />
+                </Spin>
+            </div>
+        );
     }
 
     if (error) {

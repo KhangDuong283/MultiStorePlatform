@@ -1,6 +1,7 @@
 import { usePlaylistsDetails } from "../hooks/usePlaylistsDetails";
 import { useGetAllCourse } from "../hooks/useGetAllCourse";
 import CourseItem from "./CourseItem";
+import { Spin } from "antd";
 
 const CourseList = () => {
     const { courses, isLoadingCourses } = useGetAllCourse()
@@ -11,7 +12,10 @@ const CourseList = () => {
     if (isLoading || isLoadingCourses) {
         return (
             <div className="text-center py-6">
-                <span>Đang tải dữ liệu khóa học...</span>
+                <Spin tip="Đang tải dữ liệu khóa học..." size="large" >
+                    <div />
+                </Spin>
+
             </div>
         );
     }
@@ -24,7 +28,7 @@ const CourseList = () => {
         );
     }
 
-    console.log(playlistsDetails);
+    // console.log(playlistsDetails);
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {playlistsDetails?.map((course) => (

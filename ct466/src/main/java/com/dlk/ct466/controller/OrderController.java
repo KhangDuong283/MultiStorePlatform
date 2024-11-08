@@ -7,7 +7,7 @@ import com.dlk.ct466.domain.response.order.ResOrderDTO;
 import com.dlk.ct466.domain.response.order.ResUpdateOrderDTO;
 import com.dlk.ct466.service.OrderService;
 import com.dlk.ct466.util.annotation.ApiMessage;
-import com.dlk.ct466.util.constant.OrderStatusEnum;
+
 import com.dlk.ct466.util.error.IdInvalidException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

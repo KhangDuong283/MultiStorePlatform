@@ -1,5 +1,6 @@
 package com.dlk.ct466.config;
 
+import com.dlk.ct466.controller.CourseController;
 import com.dlk.ct466.domain.entity.*;
 import com.dlk.ct466.repository.*;
 import com.dlk.ct466.service.UserService;
@@ -24,6 +25,10 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final ToolRepository toolRepository;
     private final UserService userService;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final CourseRepository courseRepository;
+    private final CourseController courseController;
+    private final AddressRepository addressRepository;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -34,6 +39,8 @@ public class DatabaseInitializer implements CommandLineRunner {
         long countToolTypes = toolTypeRepository.count();
         long countTools = toolRepository.count();
         long countPaymentMethod = paymentMethodRepository.count();
+        long countCourse = courseRepository.count();
+        long countAddress = addressRepository.count();
 
 
         if (countPermissions == 0) {
@@ -455,12 +462,85 @@ public class DatabaseInitializer implements CommandLineRunner {
         if (countPaymentMethod == 0) {
             List<PaymentMethod> paymentMethods = new ArrayList<>();
             paymentMethods.add(PaymentMethod.builder().name("Thanh toán khi nhận hàng").isActive(true).build());
-            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua thẻ ngân hàng").isActive(true).build());
-            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua VN PAY").isActive(true).build());
+            paymentMethods.add(PaymentMethod.builder().name("Thẻ tín dụng/Ghi nợ").isActive(true).build());
+            paymentMethods.add(PaymentMethod.builder().name("Thanh toán qua Paypal").isActive(true).build());
             paymentMethodRepository.saveAll(paymentMethods);
         }
 
-        if (countPermissions > 0 && countRoles > 0 && countUsers > 0 && countToolTypes > 0 && countTools > 0 && countPaymentMethod > 0) {
+        if (countCourse == 0) {
+            List<Course> courses = new ArrayList<>();
+            courses.add(Course.builder()
+                    .courseUrl("https://www.youtube.com/playlist?list=PLAyNEaBn-10Tc0BMn1OiHbMID2VPMv-Y1")
+                    .price(new BigDecimal("500000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .user(userRepository.findByEmail("seller1@gmail.com").orElse(null))
+                    .build());
+
+            courses.add(Course.builder()
+                    .courseUrl("https://www.youtube.com/playlist?list=PLp1vfj-6olW8lapBHPGT5gxFO5_NKTKsW")
+                    .price(new BigDecimal("1000000"))
+                    .discountedPrice(new BigDecimal("899000"))
+                    .user(userRepository.findByEmail("seller1@gmail.com").orElse(null))
+                    .build());
+
+            courses.add(Course.builder()
+                    .courseUrl("https://www.youtube.com/playlist?list=PLp1vfj-6olW8XnVFezjNZ2viSGx2WY4_K")
+                    .price(new BigDecimal("100000"))
+                    .discountedPrice(new BigDecimal("0"))
+                    .user(userRepository.findByEmail("seller2@gmail.com").orElse(null))
+                    .build());
+
+            courseRepository.saveAll(courses);
+        }
+
+        if (countAddress == 0) {
+            List<Address> addresses = new ArrayList<>();
+            addresses.add(Address.builder()
+                    .city("Cần Thơ")
+                    .district("Bình Thủy")
+                    .ward("Bình Thủy")
+                    .street("Nhà của admin")
+                    .user(userRepository.findByEmail("admin@gmail.com").orElse(null))
+                    .build());
+
+            addresses.add(Address.builder()
+                    .city("Cần Thơ")
+                    .district("Bình Thủy")
+                    .ward("Bình Thủy")
+                    .street("Nhà của buyer 1")
+                    .user(userRepository.findByEmail("buyer1@gmail.com").orElse(null))
+                    .build());
+
+            addresses.add(Address.builder()
+                    .city("Cần Thơ")
+                    .district("Bình Thủy")
+                    .ward("Bình Thủy")
+                    .street("Nhà của buyer 2")
+                    .user(userRepository.findByEmail("buyer2@gmail.com").orElse(null))
+                    .build());
+
+            addresses.add(Address.builder()
+                    .city("Cần Thơ")
+                    .district("Bình Thủy")
+                    .ward("Bình Thủy")
+                    .street("Nhà của seller 1")
+                    .user(userRepository.findByEmail("seller1@gmail.com").orElse(null))
+                    .build());
+
+            addresses.add(Address.builder()
+                    .city("Cần Thơ")
+                    .district("Bình Thủy")
+                    .ward("Bình Thủy")
+                    .street("Nhà của seller 2")
+                    .user(userRepository.findByEmail("seller2@gmail.com").orElse(null))
+                    .build());
+
+
+            addressRepository.saveAll(addresses);
+        }
+
+
+        if (countPermissions > 0 && countRoles > 0 && countUsers > 0 && countToolTypes > 0 && countTools > 0 && countPaymentMethod > 0 && countCourse > 0 && countAddress > 0) {
             System.out.println(">>> SKIP INIT DATABASE ~ ALREADY HAVE DATA...");
         } else
             System.out.println(">>> END INIT DATABASE");

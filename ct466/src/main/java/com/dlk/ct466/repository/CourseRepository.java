@@ -12,4 +12,6 @@ public interface CourseRepository extends JpaRepository<Course, String>, JpaSpec
 
     Optional<Course> findByCourseUrl(String courseUrl);
 
+    Optional<Course> findByCourseUrlAndDeletedFalse(String courseUrl);
+
 }

@@ -3,38 +3,72 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import CourseTable from "./CourseTable";
 import CourseForm from "./CourseForm";
+import { useCreateCourse } from "../hooks/useCreateCourse";
+import { callCheckUrlExistInDb, checkIfPlaylistExists, getPlaylistId } from "../../../services/YoutubeService";
+import { toast } from "react-toastify";
+import { useUpdateCourse } from "../hooks/useUpdateCourse";
+import { useDeleteCourse } from "../hooks/useDeleteCourse";
+import { useGetAllCourseByUserId } from "../hooks/useGetAllCourseByUserId";
 
 const CourseManagement = () => {
     const userId = useSelector(state => state?.account?.user?.id);
-
-    // Dữ liệu ảo để test giao diện
-    const mockCourses = [
-        {
-            courseId: "1",
-            courseUrl: "https://www.youtube.com/playlist?list=123",
-            price: 123000,
-            discountedPrice: 100000,
-            userId: userId,
-        },
-        // Thêm các khóa học khác nếu cần
-    ];
-
-    const [courses, setCourses] = useState(mockCourses);
     const [editingCourse, setEditingCourse] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const handleCreateCourse = (newCourse) => {
-        setCourses([...courses, { ...newCourse, courseId: `${Date.now()}` }]);
+    const { courses: courseDB, isLoading: isLoadingCourseDB } = useGetAllCourseByUserId(userId);
+    const courseData = courseDB?.result || null;
+
+    const { createCourse, isCreatingCourse } = useCreateCourse();
+
+    const handleCreateCourse = async (newCourse) => {
+
+        const checkExistInYoutube = await checkIfPlaylistExists(newCourse.courseUrl)
+        if (checkExistInYoutube == false) {
+            toast.error("Playlist url không tồn tại");
+            return;
+        } else {
+            const checkExistInDb = await callCheckUrlExistInDb(getPlaylistId(newCourse.courseUrl))
+            // console.log(checkExistInDb)
+            if (checkExistInDb != null) {
+                toast.error("Playlist url đã tồn tại");
+                return;
+            }
+            const data = {
+                ...newCourse,
+                userId,
+            }
+            createCourse(data, {
+                onSuccess: () => {
+                    setIsModalVisible(false);
+                    toast.success("Thêm khóa học thành công")
+                },
+                onError: () => {
+                    toast.error("Có lỗi xảy ra khi tạo khóa học");
+                }
+            });
+        }
     };
+
+    const { updateCourse } = useUpdateCourse();
 
     const handleUpdateCourse = (updatedCourse) => {
-        setCourses(courses.map(course =>
-            course.courseId === updatedCourse.courseId ? updatedCourse : course
-        ));
+        const data = {
+            courseUrl: updatedCourse.courseUrl,
+            discountedPrice: updatedCourse.discountedPrice,
+            price: updatedCourse.price
+        };
+        const courseId = updatedCourse.courseId;
+        updateCourse({ data, courseId }, {
+            onSuccess: () => {
+                toast.success("Cập nhật khóa học thành công")
+                setIsModalVisible(false);
+            }
+        })
     };
 
+    const { deleteCourse } = useDeleteCourse();
     const handleDeleteCourse = (courseId) => {
-        setCourses(courses.filter(course => course.courseId !== courseId));
+        deleteCourse(courseId)
     };
 
     const handleEdit = (course) => {
@@ -46,17 +80,17 @@ const CourseManagement = () => {
         setEditingCourse(null);
         setIsModalVisible(true);
     };
-
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-semibold mb-4 text-center">Quản lý khóa học</h1>
+        <div className="p-3">
+            <h1 className="text-2xl font-semibold mb-3 text-center">Quản lý khóa học</h1>
             <Button onClick={openCreateModal} type="primary" className="mb-3">
                 Thêm khóa học
             </Button>
             <CourseTable
-                courses={courses}
+                courses={courseData}
                 onEdit={handleEdit}
                 onDelete={handleDeleteCourse}
+                isLoading={isLoadingCourseDB}
             />
             <CourseForm
                 userId={userId}
@@ -64,6 +98,7 @@ const CourseManagement = () => {
                 onCancel={() => setIsModalVisible(false)}
                 onSubmit={editingCourse ? handleUpdateCourse : handleCreateCourse}
                 editingCourse={editingCourse}
+                isCreatingCourse={isCreatingCourse}
             />
         </div>
     );

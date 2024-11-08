@@ -1,14 +1,34 @@
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
+import { useEffect, useState } from "react";
+import { fetchPlaylistTitle } from "../../../services/YoutubeService";
 
-const CourseTable = ({ courses, onEdit, onDelete }) => {
+const CourseTable = ({ courses = [], onEdit, onDelete, isLoading }) => {
+    const [playlistTitles, setPlaylistTitles] = useState({});
+
+    useEffect(() => {
+        const loadTitles = async () => {
+            const titles = {};
+            courses?.map(async (course) => {
+                if (course.courseUrl && !playlistTitles[course.courseUrl]) {
+                    const title = await fetchPlaylistTitle(course.courseUrl);
+                    titles[course.courseUrl] = title || "Không thể lấy tên";
+                }
+            })
+            setPlaylistTitles(titles);
+        };
+
+        loadTitles();
+    }, [courses]);
+
     const columns = [
         {
-            title: "URL Khóa học",
+            title: "URL playlist youtube",
             dataIndex: "courseUrl",
             key: "courseUrl",
             align: "center",
             render: (text) => (
                 <a href={text} target="_blank" rel="noopener noreferrer">
+                    {/* {playlistTitles[text] || "Đang tải..."} */}
                     {text}
                 </a>
             ),
@@ -45,13 +65,15 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
     ];
 
     return (
-        <Table
-            className="shadow-lg"
-            dataSource={courses}
-            rowKey="courseId"
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-        />
+        <Spin spinning={isLoading} tip="Đang tải thông tin khóa học">
+            <Table
+                className="shadow-lg"
+                dataSource={courses}
+                rowKey="courseId"
+                columns={columns}
+                pagination={{ pageSize: 5 }}
+            />
+        </Spin>
     );
 };
 
