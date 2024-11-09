@@ -49,11 +49,19 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourseByUser(userId, pageable));
     }
 
-    @GetMapping("/playlistId/{playListId}")
-    @ApiMessage("Get course by url")
+    @PostMapping("/courseUrl")
+    @ApiMessage("Get course db by url")
     public ResponseEntity<Course> getByPlaylistId(
-            @PathVariable String playListId) {
-        return ResponseEntity.ok(courseService.getCourseByPlaylistId(playListId));
+            @RequestBody String courseUrl) {
+        return ResponseEntity.ok(courseService.courseGetCourseByCourseUrlNotDeleted(courseUrl));
+    }
+
+    @GetMapping("/{courseId}")
+    @ApiMessage("Get course by id")
+    public ResponseEntity<Course> getById(
+            @PathVariable String courseId
+    ) throws IdInvalidException {
+        return ResponseEntity.ok(courseService.getCourseById(courseId));
     }
 
     @DeleteMapping("/{courseId}")

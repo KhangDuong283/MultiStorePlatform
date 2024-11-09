@@ -45,6 +45,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "address_id")
     Address address;
 
+    @Enumerated(EnumType.STRING)
     OrderType type;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)

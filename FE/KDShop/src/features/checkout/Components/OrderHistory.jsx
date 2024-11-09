@@ -7,6 +7,8 @@ import { useGetToolByToolId } from '../hooks/useGetToolByToolId';
 import { useUpdateOrder } from '../../seller/hooks/useUpdateOrder';
 import OrderDetailSelectStatus from './OrderDetailSelectStatus';
 import OrderHistoryList from './OrderHistoryList';
+import { useGetOrderCourseByOrderId } from '../hooks/useGetOrderCourseByOrderId';
+import { useGetCourseByCourseId } from '../hooks/useGetCourseByCourseId';
 
 const { Title } = Typography;
 
@@ -19,25 +21,48 @@ const OrderHistory = () => {
     const { orders, isLoading } = useGetOrderByUserId(userId);
 
     const { getToolByToolId, isLoadingTool } = useGetToolByToolId();
-
-
+    const { getCourseByCourseId } = useGetCourseByCourseId();
 
     const { getOrderToolByOrderId } = useGetOrderToolByOrderId();
-    // Hàm cập nhật chi tiết đơn hàng thêm thuộc tính của tool
+    const { getOrderCourseByOrderId } = useGetOrderCourseByOrderId()
+
     const fetchOrderItems = async () => {
         const allOrderItems = {};
-        for (const order of orders) {
-            const orderDetail = await getOrderToolByOrderId(order.orderId);
-            const fetchedItems = await Promise.all(
-                orderDetail.map(async (item) => {
-                    item.tool = await getToolByToolId(item.tool.toolId);
-                    return item;
-                })
-            );
-            allOrderItems[order.orderId] = fetchedItems;
+
+        if (!Array.isArray(orders) || orders.length === 0) {
+            return allOrderItems;
         }
+
+        for (const order of orders) {
+            let orderDetail;
+            let fetchedItems;
+            if (order.type === 'COURSE') {
+                orderDetail = await getOrderCourseByOrderId(order.orderId);
+                fetchedItems = await Promise.all(
+                    orderDetail.map(async (item) => {
+                        item.course = await getCourseByCourseId(item.course.courseId);
+                        return item;
+                    })
+                );
+                allOrderItems[order.orderId] = fetchedItems;
+                // console.log(allOrderItems);
+            } else {
+                orderDetail = await getOrderToolByOrderId(order.orderId);
+                fetchedItems = await Promise.all(
+                    orderDetail.map(async (item) => {
+                        item.tool = await getToolByToolId(item.tool.toolId);
+                        return item;
+                    })
+                );
+                allOrderItems[order.orderId] = fetchedItems;
+
+            }
+
+        }
+        // console.log(allOrderItems);
         return allOrderItems;
     };
+
 
     useEffect(() => {
         const loadOrderItems = async () => {

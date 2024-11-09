@@ -29,3 +29,17 @@ export const callGetAllCourseByUserId = async (userId) => {
     const res = await axios.get(path);
     return res?.data;
 }
+
+export const callGetCourseByCourseId = async (courseId) => {
+    const path = `/api/v1/courses/${courseId}`;
+    const res = await axios.get(path);
+    // console.log(res?.data);
+    return res?.data;
+}
+
+// export const callGetCourseDBByCourseUrl = async (courseUrl) => {
+//     const path = `/api/v1/courses/courseUrl`;
+//     const res = await axios.post(path, courseUrl);
+//     console.log(res);
+//     return res?.data;
+// }

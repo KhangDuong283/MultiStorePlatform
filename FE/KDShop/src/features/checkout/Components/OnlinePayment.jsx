@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Form, Input, Button, Select, Divider, Typography } from "antd";
 import { CreditCardOutlined, DollarOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCreateOrder } from "../hooks/useCreateOrder";
 import { useSelector } from "react-redux";
 import { useAddressUser } from "../hooks/useAddressUser";
@@ -12,6 +12,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const OnlinePayment = () => {
+    const navigate = useNavigate();
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
     const marginTop = paymentMethod === "creditCard" ? "0" : "3.5rem";
     const userId = useSelector(state => state?.account?.user?.id);
@@ -36,7 +37,8 @@ const OnlinePayment = () => {
             },
             address: {
                 addressId
-            }
+            },
+            type: "COURSE",
         }
         const res = await createOrder(courseOrder)
         const orderId = res.orderId;
@@ -46,7 +48,8 @@ const OnlinePayment = () => {
             },
             course: {
                 courseId: course.courseId
-            }
+            },
+            quantity: 1,
         }
         await createOrderCourse(orderCourse)
 
@@ -126,6 +129,7 @@ const OnlinePayment = () => {
                         htmlType="submit"
                         icon={<DollarOutlined />}
                         className="w-full"
+                        onClick={() => navigate(-1)}
                     >
                         Thanh Toán
                     </Button>

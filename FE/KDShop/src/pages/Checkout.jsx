@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { useAddressUser } from '../features/checkout/hooks/useAddressUser';
 import { useGetAllPaymentMethod } from '../features/checkout/hooks/usePaymentMethod';
 import { useCreateOrderTool } from '../features/checkout/hooks/useCreateOrderTool';
+import { toast } from 'react-toastify';
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -74,7 +75,8 @@ const CheckoutPage = () => {
             },
             address: {
                 addressId: selectedAddress
-            }
+            },
+            type: "PRODUCT"
         }
         const data = await createOrder(order);
         const orderId = data?.orderId;
@@ -87,6 +89,7 @@ const CheckoutPage = () => {
             createOrderTool(newOrderItem);
             newOrderItem = {}
             navigate(-1)
+            toast.success("Thanh toán thành công");
         }
 
         if (selectedItems.length != 0) {
@@ -109,6 +112,7 @@ const CheckoutPage = () => {
             setCartQuantity(cartQuantity - selectedItems.length);
             setSelectedItems([]);
             navigate(-1);
+            toast.success("Thanh toán thành công");
         }
     };
 
@@ -116,7 +120,7 @@ const CheckoutPage = () => {
         <Layout className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-200 flex items-center justify-center">
             <Content className="w-full max-w-lg p-4 md:p-8">
                 <Card className="rounded-xl shadow-xl overflow-hidden">
-                    <Title level={3} className="text-center text-purple-700">Xác nhận Thanh toán</Title>
+                    <Title level={3} className="text-center text-purple-700">Thanh toán</Title>
 
                     <CheckoutSummary
                         totalAmount={totalAmount}

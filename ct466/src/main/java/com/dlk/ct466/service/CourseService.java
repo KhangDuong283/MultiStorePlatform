@@ -37,7 +37,8 @@ public class CourseService {
     }
 
     public Course courseGetCourseByCourseUrlNotDeleted(String courseUrl)  {
-        return courseRepository.findByCourseUrlAndDeletedFalse(courseUrl).orElse(null);
+        System.out.println("courseUrl: " + courseUrl);
+        return courseRepository.findCourseByCourseUrlAndNotDeleted(courseUrl).orElse(null);
     }
 
     public Course createCourse(ReqCourseDTO course) throws IdInvalidException {
@@ -66,8 +67,8 @@ public class CourseService {
     }
 
 
-    public Course getCourseByPlaylistId(String playListId) {
-        String playlistUrl = "https://www.youtube.com/playlist?list=" + playListId;
+    public Course getCourseByPlaylistId(String courseUrl) {
+        String playlistUrl = "https://www.youtube.com/playlist?list=" + courseUrl;
         return courseGetCourseByCourseUrlNotDeleted(playlistUrl);
     }
 

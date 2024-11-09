@@ -1,5 +1,5 @@
 import { Select } from "antd"
-import { Option } from "antd/es/mentions"
+const { Option } = Select;
 
 const OrderDetailSelectStatus = ({ onStatusChange }) => {
     return (

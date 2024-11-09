@@ -29,10 +29,25 @@ export const getStatusContent = (status) => {
     }
 };
 
-// Hàm tính toán tổng tiền cho đơn hàng
-export const calculateTotalAmount = (orderItems) => {
+export const calculateTotalAmount = (orderItems = []) => {
+    if (!Array.isArray(orderItems)) {
+        return 0;
+    }
+
     return orderItems.reduce((total, item) => {
-        const price = item.tool.discountedPrice || item.tool.price;
+        let toolPrice = 0;
+        let coursePrice = 0;
+
+        // Kiểm tra và lấy giá trị của tool hoặc course
+        if (item?.tool) {
+            toolPrice = item.tool.discountedPrice || item.tool.price;
+        }
+        if (item?.course) {
+            coursePrice = item.course.discountedPrice || item.course.price;
+        }
+
+        // Nếu không có giá của cả tool và course, trả về 0
+        const price = toolPrice || coursePrice;
         return total + price * item.quantity;
     }, 0);
 };

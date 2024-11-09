@@ -24,7 +24,7 @@ import OrderManagement from "../features/seller/components/OrderManagement";
 import CourseManagement from "../features/seller/components/CourseManagement";
 import Statistics from "../features/seller/components/Statistics";
 import CoursePage from "../pages/CoursePage";
-import CourseDetail from "../features/courses/components/VideoPlayList";
+import CourseDetail from "../features/courses/components/CourseDetail";
 import OnlinePayment from "../features/checkout/Components/OnlinePayment";
 const router = createBrowserRouter([
     {

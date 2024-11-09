@@ -7,7 +7,7 @@ export function useCreateOrderCourse() {
     const { mutateAsync: createOrderCourse, isLoading, error } = useMutation({
         mutationFn: (orderCourse) => callCreateOrderCourse(orderCourse),
         onSuccess: (data) => {
-            queryClient.invalidateQueries("orderCourses");
+            queryClient.invalidateQueries("order-courses");
             return data;
         },
         onError: () => {

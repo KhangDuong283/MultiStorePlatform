@@ -68,9 +68,6 @@ export async function fetchPlaylistDetails(playlistUrl) {
         const playlistResponse = await axios.get(playlistApiUrl);
         const playlistData = playlistResponse.data;
 
-        // if (!playlistData.items || playlistData.items.length === 0)
-        //     toast.error("Không tìm thấy playlist");
-
         const playlist = playlistData.items[0];
         const playlistDetails = {
             title: playlist.snippet.title,
