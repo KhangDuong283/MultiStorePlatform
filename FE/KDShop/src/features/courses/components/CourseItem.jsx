@@ -14,6 +14,10 @@ const CourseItem = ({ course }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
     const userId = useSelector(state => state?.account?.user?.id);
+    const user = useSelector(state => state?.account?.user);
+    console.log(user);
+
+    // thực hiện thêm khóa học vào giỏ hàng tại đây
 
     const onAddToCartClick = () => {
         if (userId == undefined || userId == null || userId == "") {

@@ -18,11 +18,6 @@ public class CartCourse extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long cartCourseId;
 
-    @Column(nullable = false)
-    @NotNull(message = "Quantity could not be null")
-    @Min(value = 1, message = "Quantity must be at least 1")
-    int quantity;
-
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
     Cart cart;

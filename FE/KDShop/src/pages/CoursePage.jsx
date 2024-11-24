@@ -6,7 +6,7 @@ const CoursePage = () => {
     return (
         <div className="pt-1">
             <CardContainer>
-                <CourseList />
+                <CourseList pageSize={10} />
             </CardContainer>
         </div>
     )

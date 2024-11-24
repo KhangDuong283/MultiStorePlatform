@@ -10,6 +10,7 @@ const initialState = {
         id: "",
         email: "",
         fullName: "",
+        cartId: "",
         role: {
             id: "",
             name: "",
@@ -37,6 +38,7 @@ export const accountSlice = createSlice({
             state.user.id = action?.payload?.id;
             state.user.email = action.payload.email;
             state.user.fullName = action.payload.fullName;
+            state.user.cartId = action.payload.cartId;
             state.user.role = action.payload.role;
 
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
@@ -48,6 +50,7 @@ export const accountSlice = createSlice({
                 id: "",
                 email: "",
                 fullName: "",
+                cartId: "",
                 role: {
                     id: "",
                     name: "",
@@ -59,8 +62,6 @@ export const accountSlice = createSlice({
             state.isRefreshToken = action.payload?.status ?? false;
             state.errorRefreshToken = action.payload?.message ?? "";
         },
-
-
     },
 
     extraReducers: (builder) => {
@@ -78,6 +79,7 @@ export const accountSlice = createSlice({
                 state.user.id = action?.payload?.user?.id;
                 state.user.email = action.payload.user?.email;
                 state.user.fullName = action.payload.user?.fullName;
+                state.user.cartId = action.payload.user?.cartId;
                 state.user.role = action.payload.user?.role;
                 state.user.role.permissions = action?.payload?.user?.role?.permissions ?? [];
             }

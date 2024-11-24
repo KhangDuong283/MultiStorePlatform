@@ -28,6 +28,7 @@ public class PermissionInterceptorConfiguration implements WebMvcConfigurer {
                 "/api/v1/paymentmethods/**",
                 "/api/v1/orders/**",
                 "/api/v1/ordertools/**",
+                "/api/v1/cart-courses/**",
         };
         registry.addInterceptor(getPermissionInterceptor())
                 .excludePathPatterns(whiteList)

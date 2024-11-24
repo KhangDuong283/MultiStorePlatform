@@ -5,6 +5,7 @@ import { checkEmailExists, login } from '../../../services/AuthService';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { setLoginUserInfo } from '../../../redux/slices/accountSlice';
+import { useCartByUserId } from '../hooks/useGetCartByUserId';
 const { Title } = Typography;
 
 const LoginForm = () => {
@@ -19,6 +20,7 @@ const LoginForm = () => {
     const [isSubmit, setIsSubmit] = useState(false);
     const dispatch = useDispatch();
 
+    const { getCartByUserId } = useCartByUserId();
     const onFinish = async (values) => {
         const { email, password } = values;
         // Check email tồn tại hay không
@@ -34,7 +36,10 @@ const LoginForm = () => {
 
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
-            console.log(res.data.user);
+            // console.log(res.data.user.id);
+            const cart = await getCartByUserId(res.data.user.id);
+            // console.log(cart);
+            res.data.user.cartId = cart?.cartId;
             dispatch(setLoginUserInfo(res.data.user))
 
             toast.success('Đăng nhập thành công');

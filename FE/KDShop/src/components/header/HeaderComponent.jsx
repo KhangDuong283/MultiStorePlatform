@@ -25,7 +25,7 @@ const HeaderComponent = () => {
     const user = useSelector(state => state.account?.user);
     const permissions = user?.role?.permissions;
     let role = user?.role?.name;
-    const userName = user?.fullName;
+    // const userName = user?.fullName;
 
     const handleLogout = () => {
         dispatch(setLogoutUser({}));
@@ -149,7 +149,7 @@ const HeaderComponent = () => {
                         <Avatar icon={<UserOutlined />} size={38} className="cursor-pointer hover:scale-110" />
                     </Dropdown>
 
-                    <span className="text-white ml-3 text-base">{userName}</span>
+                    {/* <span className="text-white ml-3 text-base">{userName}</span> */}
                 </>
             )}
         </Header >

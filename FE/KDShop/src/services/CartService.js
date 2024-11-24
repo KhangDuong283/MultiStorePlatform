@@ -6,3 +6,4 @@ export const getUserCart = async (id) => {
     // console.log(res?.data);
     return res?.data;
 }
+

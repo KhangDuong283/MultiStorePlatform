@@ -6,7 +6,7 @@ const ToolPage = () => {
     return (
         <div className="pt-1">
             <CardContainer>
-                <ToolList />
+                <ToolList pageSize={10} />
             </CardContainer>
         </div>
     )
