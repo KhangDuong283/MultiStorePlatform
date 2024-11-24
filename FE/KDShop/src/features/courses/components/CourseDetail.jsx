@@ -208,7 +208,7 @@ const CourseDetail = () => {
                 className="rounded-md overflow-hidden"
             >
                 {selectedVideo && (
-                    <div className="video-container">
+                    <div className="video-container" >
                         <iframe
                             width="100%"
                             height="450"

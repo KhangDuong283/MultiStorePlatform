@@ -2,7 +2,7 @@ import axios from "axios";
 import { parseDuration } from "../features/courses/hooks/formatDuration";
 import { toast } from "react-toastify";
 
-const API_KEY_YOUTUBE = 'AIzaSyDjCUacTnv_xPxbjXxEia3GQTa-NlhGxRA';
+const API_KEY_YOUTUBE = 'AIzaSyC-g79eTR0o6Bl7cp8T5gVSFnLpcrgisjI';
 
 // Hàm lấy id từ url playlist
 export function getPlaylistId(url) {

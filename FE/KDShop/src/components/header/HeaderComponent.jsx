@@ -109,7 +109,8 @@ const HeaderComponent = () => {
     };
 
     const handleProductClick = (productId) => {
-        navigate(`/product/${productId}`);
+        setSearchResults([]);
+        navigate(`/tool/${productId}`);
         setShowDropdown(false);
         setSearchTerm('');
     };
@@ -197,6 +198,13 @@ const HeaderComponent = () => {
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => setShowDropdown(true)}
+                    onBlur={() => {
+                        // Xóa kết quả tìm kiếm và ẩn dropdown khi ô tìm kiếm mất focus
+                        setTimeout(() => {
+                            setSearchResults([]);
+                            setShowDropdown(false);
+                        }, 200); // Thêm delay nhỏ để tránh việc ẩn trước khi chọn mục
+                    }}
                 />
                 {showDropdown && searchResults.length > 0 && (
                     <div className="absolute z-50 w-full bg-white mt-1 rounded-lg shadow-lg">
@@ -204,7 +212,7 @@ const HeaderComponent = () => {
                             <div
                                 key={product.id}
                                 className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                                onClick={() => handleProductClick(product.id)}
+                                onClick={() => handleProductClick(product.toolId)}
                             >
                                 <img
                                     src={TOOL_URL + product.imageUrl || 'https://via.placeholder.com/40'}
