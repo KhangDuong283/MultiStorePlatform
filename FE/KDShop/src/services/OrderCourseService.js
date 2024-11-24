@@ -18,3 +18,9 @@ export const callGetOrderCourseByCourseId = async (courseId) => {
     // console.log(res?.data);
     return res?.data?.result;
 }
+
+export const callGetOrderCourseByUserId = async (userId) => {
+    const path = `/api/v1/ordercourses/user/${userId}`;
+    const res = await axios.get(path);
+    return res?.data?.result;
+}

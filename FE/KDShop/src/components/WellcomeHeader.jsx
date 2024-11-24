@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 const WellcomeHeader = () => {
     const { user } = useSelector(state => state?.account);
-    console.log(user);
+    // console.log(user);
 
     return (
         <div className="m-4 mb-4 mb-0 bg-gray-100 rounded-lg shadow-md overflow-hidden">

@@ -3,6 +3,7 @@ package com.dlk.ct466.service;
 import com.dlk.ct466.domain.entity.Course;
 import com.dlk.ct466.domain.entity.Order;
 import com.dlk.ct466.domain.entity.OrderCourse;
+import com.dlk.ct466.domain.mapper.OrderCourseMapper;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.repository.OrderCourseRepository;
 import com.dlk.ct466.util.PaginationUtil;
@@ -91,5 +92,13 @@ public class OrderCourseService {
     public void deleteOrderCourse(String id) throws IdInvalidException {
         OrderCourse orderCourse = getOrderCourseById(id);
         orderCourseRepository.delete(orderCourse);
+    }
+
+    public ResPaginationDTO getOrderCoursesByUserId(Pageable pageable, String userId) {
+        FilterNode node = filterParser.parse("order.user.id='" + userId + "'");
+        FilterSpecification<OrderCourse> spec = filterSpecificationConverter.convert(node);
+
+        Page<OrderCourse> pageOrderCourse = orderCourseRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageOrderCourse, pageable, OrderCourseMapper::toDto);
     }
 }

@@ -60,4 +60,12 @@ public class OrderCourseController {
         orderCourseService.deleteOrderCourse(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}")
+    @ApiMessage("Get order courses by user ID")
+    public ResponseEntity<ResPaginationDTO> getOrderCoursesByUserId(
+            Pageable pageable,
+            @PathVariable("userId") String userId) throws IdInvalidException {
+        return ResponseEntity.ok(orderCourseService.getOrderCoursesByUserId(pageable, userId));
+    }
 }

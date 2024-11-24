@@ -37,16 +37,30 @@ const CourseDetail = () => {
         course = dataFromHistoryComponent;
     }
 
+    let { course_from_header } = location.state || {};
+    if (course.playlistDetails === undefined) {
+        if (course_from_header !== undefined) {
+            const data = {
+                ...course_from_header.course,
+                ...course_from_header.order,
+                playlistDetails: course_from_header.playlistDetails,
+            }
+            console.log(data);
+            course = data;
+        }
+    }
+    // console.log(course);
+
     const courseId = course?.courseId;
 
     let isUserBought = false;
     const { getOrderCourseByCourseId } = useGetOrderCourseByCourseId(courseId);
 
     if (getOrderCourseByCourseId?.length == 0) {
-        console.log("Không có dữ liệu");
+        // console.log("Không có dữ liệu");
     } else {
         // console.log(getOrderCourseByCourseId);
-        console.log("Có dữ liệu");
+        // console.log("Có dữ liệu");
         const check = getOrderCourseByCourseId?.some(item => {
             return item?.order?.user?.userId === currentUserId;
         });
@@ -102,7 +116,7 @@ const CourseDetail = () => {
                     <Typography.Text className="text-xl font-semibold text-red-500">
                         {(course?.discountedPrice || course?.price || 0).toLocaleString()}đ
                         {course?.discountedPrice && (
-                            <span className="line-through text-gray-500 ml-2">{course.price.toLocaleString()}đ</span>
+                            <span className="line-through text-gray-500 ml-2">{course?.price.toLocaleString()}đ</span>
                         )}
                     </Typography.Text>
                     <Typography.Text className="text-gray-700">Được tạo bởi: {course?.user?.fullName}</Typography.Text>
@@ -111,24 +125,26 @@ const CourseDetail = () => {
                     <Typography.Text className="text-gray-700">Tổng thời lượng: {time}</Typography.Text>
                     <Typography.Text className="text-gray-700">Số bài giảng: {course?.playlistDetails?.videos?.length}</Typography.Text>
                 </div>
-                <div className="flex space-x-4 mt-4 lg:mt-0 lg:ml-4">
-                    <Button
-                        type="primary"
-                        icon={<ShoppingCartOutlined />}
-                        onClick={handleAddToCart}
-                        className="bg-blue-500 hover:bg-blue-600"
-                    >
-                        Thêm vào giỏ hàng
-                    </Button>
-                    <Button
-                        type="primary"
-                        icon={<DollarOutlined />}
-                        onClick={handleBuyNow}
-                        className="bg-green-500 hover:bg-green-600"
-                    >
-                        Mua ngay
-                    </Button>
-                </div>
+                {!isUserBought && (
+                    <div className="flex space-x-4 mt-4 lg:mt-0 lg:ml-4">
+                        <Button
+                            type="primary"
+                            icon={<ShoppingCartOutlined />}
+                            onClick={handleAddToCart}
+                            className="bg-blue-500 hover:bg-blue-600"
+                        >
+                            Thêm vào giỏ hàng
+                        </Button>
+                        <Button
+                            type="primary"
+                            icon={<DollarOutlined />}
+                            onClick={handleBuyNow}
+                            className="bg-green-500 hover:bg-green-600"
+                        >
+                            Mua ngay
+                        </Button>
+                    </div>
+                )}
             </div>
 
             <Divider />

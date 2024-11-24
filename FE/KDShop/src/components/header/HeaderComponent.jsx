@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Layout, Menu, Input, Avatar, Badge, Button, Dropdown } from 'antd';
-import { UserOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { UserOutlined, SearchOutlined, ShoppingCartOutlined, BookOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { store } from "../../redux/store"
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import { useCartContext } from '../CartProvider';
 import { useUpdateUserRoleByUserId } from '../../features/auth/hooks/useUpdateUserRoleByUserId';
 import { useEffect, useState } from 'react';
+import { useGetRegisterCourses } from '../../hooks/useGetRegisterCourses';
+import { useGetPlayListDetail } from '../../hooks/useGetPlayListDetail';
 
 const { Header } = Layout;
 const menuItems = [
@@ -25,7 +27,7 @@ const HeaderComponent = () => {
     const user = useSelector(state => state.account?.user);
     const permissions = user?.role?.permissions;
     let role = user?.role?.name;
-    // const userName = user?.fullName;
+    const userId = user?.id;
 
     const handleLogout = () => {
         dispatch(setLogoutUser({}));
@@ -40,7 +42,6 @@ const HeaderComponent = () => {
         navigate('/auth/login');
         toast.success("Bạn đã trở thành người bán hãy đăng nhập lại");
     }
-
 
     const menuItemsForDropdown = [
         {
@@ -79,6 +80,65 @@ const HeaderComponent = () => {
             navigate(item.path);
         }
     };
+
+    const { registerCourses } = useGetRegisterCourses(userId);
+    const { getPlaylistDetail } = useGetPlayListDetail();
+
+
+    useEffect(() => {
+        const fetchPlaylistDetails = async () => {
+            if (registerCourses && registerCourses.length > 0) {
+                for (const course of registerCourses) {
+                    try {
+                        const response = await getPlaylistDetail(course.course.courseUrl);
+                        // Add playlist details directly to the course object
+                        course.playlistDetails = response;
+                    } catch (error) {
+                        console.error('Error fetching playlist details:', error);
+                    }
+                }
+            }
+        };
+
+        fetchPlaylistDetails();
+    }, [registerCourses, getPlaylistDetail]);
+
+    // console.log(registerCourses);
+    const courseMenu = {
+        items: registerCourses && registerCourses.length > 0
+            ? registerCourses.map((course) => ({
+                key: course.course.courseId,
+                label: (
+                    <div
+                        className="flex items-center gap-3 cursor-pointer hover:bg-gray-100 transition duration-300 rounded-lg p-2"
+                        onClick={() => navigate("/course-detail", { state: { course_from_header: course } })}
+                    >
+                        <img
+                            src={course.playlistDetails?.thumbnail || 'https://via.placeholder.com/60'}
+                            alt={course.playlistDetails?.title || course.course.courseId}
+                            className="w-12 h-12 object-cover rounded"
+                        />
+                        <div>
+                            <p className="text-base font-medium text-gray-800 truncate max-w-[200px]">
+                                {course.playlistDetails?.title || 'Đang tải...'}
+                            </p>
+                            <p className="text-sm text-gray-500">Click để học ngay</p>
+                        </div>
+                    </div >
+                ),
+            }))
+            : [
+                {
+                    key: 'no-courses',
+                    label: (
+                        <p className="text-gray-500 text-sm p-2">
+                            Bạn chưa đăng ký khóa học nào.
+                        </p>
+                    ),
+                },
+            ]
+    };
+
 
     return (
         <Header className="flex items-center px-8 h-[70px] shadow-md fixed-header" style={{ backgroundColor: "#8294C4" }}>
@@ -124,11 +184,19 @@ const HeaderComponent = () => {
                         className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
                         Đăng ký
                     </button>
-
-
                 </>
             ) : (
                 <>
+                    <Dropdown menu={courseMenu} placement="bottomLeft" trigger={['click']}>
+                        <Button
+                            type="text"
+                            icon={<BookOutlined />}
+                            className="flex items-center justify-center mr-4 text-white hover:text-blue-200 hover:scale-105 transition-transform duration-300 text-base font-medium"
+                        >
+                            Học tập
+                        </Button>
+                    </Dropdown>
+
                     <Button
                         type="text"
                         className="relative flex items-center justify-center p-0 mr-4"
@@ -148,11 +216,9 @@ const HeaderComponent = () => {
                     <Dropdown menu={menu} placement="bottomLeft" trigger={['click']}>
                         <Avatar icon={<UserOutlined />} size={38} className="cursor-pointer hover:scale-110" />
                     </Dropdown>
-
-                    {/* <span className="text-white ml-3 text-base">{userName}</span> */}
                 </>
             )}
-        </Header >
+        </Header>
     );
 };
 
