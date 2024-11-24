@@ -8,7 +8,7 @@ const CourseList = ({ pageSize }) => {
     const { courses, isLoadingCourses } = useGetAllCourse();
     const courseData = courses?.result;
     const { playlistsDetails, isLoading, error } = usePlaylistsDetails(courseData);
-    console.log(playlistsDetails);
+    // console.log(playlistsDetails);
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
 
     if (isLoading || isLoadingCourses) {

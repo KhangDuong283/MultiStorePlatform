@@ -43,3 +43,9 @@ export const callGetAllToolByUserId = async (id) => {
   const res = await axios.get(path);
   return res?.data?.result;
 }
+
+export const searchToolByName = async (searchTerm) => {
+  const path = `/api/v1/tools/name?filter=name ~ '${searchTerm}'&page=1&size=5`;
+  const res = await axios.get(path);
+  return res?.data?.result;
+}

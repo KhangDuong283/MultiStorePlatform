@@ -1,5 +1,6 @@
 package com.dlk.ct466.controller;
 
+import com.dlk.ct466.domain.entity.Tool;
 import com.dlk.ct466.domain.request.tool.ReqToolDTO;
 import com.dlk.ct466.domain.response.ResPaginationDTO;
 import com.dlk.ct466.domain.response.tool.ResCreateToolDTO;
@@ -8,9 +9,11 @@ import com.dlk.ct466.domain.response.tool.ResUpdateToolDTO;
 import com.dlk.ct466.service.ToolService;
 import com.dlk.ct466.util.annotation.ApiMessage;
 import com.dlk.ct466.util.error.IdInvalidException;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,6 +80,13 @@ public class ToolController {
         return ResponseEntity.ok(toolService.getToolByTypeId(pageable, id));
     }
 
-
+    @GetMapping("/name")
+    @ApiMessage("Get tool by name")
+    public ResponseEntity<ResPaginationDTO> getByName(
+            @Filter Specification<Tool> spec,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(toolService.getToolByName(spec, pageable));
+    }
 
 }

@@ -11,6 +11,8 @@ import { useUpdateUserRoleByUserId } from '../../features/auth/hooks/useUpdateUs
 import { useEffect, useState } from 'react';
 import { useGetRegisterCourses } from '../../hooks/useGetRegisterCourses';
 import { useGetPlayListDetail } from '../../hooks/useGetPlayListDetail';
+import { searchToolByName } from '../../services/ToolService';
+import { TOOL_URL } from '../../utils/Config';
 
 const { Header } = Layout;
 const menuItems = [
@@ -28,6 +30,9 @@ const HeaderComponent = () => {
     const permissions = user?.role?.permissions;
     let role = user?.role?.name;
     const userId = user?.id;
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = () => {
         dispatch(setLogoutUser({}));
@@ -84,6 +89,30 @@ const HeaderComponent = () => {
     const { registerCourses } = useGetRegisterCourses(userId);
     const { getPlaylistDetail } = useGetPlayListDetail();
 
+    const handleSearch = async (value) => {
+        setSearchTerm(value);
+        if (value.trim()) {
+            try {
+                // Giả sử API endpoint là /api/products/search
+                const response = await searchToolByName(value);
+                console.log(response);
+                setSearchResults(response.slice(0, 5)); // Giới hạn 5 kết quả
+                setShowDropdown(true);
+            } catch (error) {
+                console.error('Error searching products:', error);
+                setSearchResults([]);
+            }
+        } else {
+            setSearchResults([]);
+            setShowDropdown(false);
+        }
+    };
+
+    const handleProductClick = (productId) => {
+        navigate(`/product/${productId}`);
+        setShowDropdown(false);
+        setSearchTerm('');
+    };
 
     useEffect(() => {
         const fetchPlaylistDetails = async () => {
@@ -91,7 +120,6 @@ const HeaderComponent = () => {
                 for (const course of registerCourses) {
                     try {
                         const response = await getPlaylistDetail(course.course.courseUrl);
-                        // Add playlist details directly to the course object
                         course.playlistDetails = response;
                     } catch (error) {
                         console.error('Error fetching playlist details:', error);
@@ -103,7 +131,6 @@ const HeaderComponent = () => {
         fetchPlaylistDetails();
     }, [registerCourses, getPlaylistDetail]);
 
-    // console.log(registerCourses);
     const courseMenu = {
         items: registerCourses && registerCourses.length > 0
             ? registerCourses.map((course) => ({
@@ -139,7 +166,6 @@ const HeaderComponent = () => {
             ]
     };
 
-
     return (
         <Header className="flex items-center px-8 h-[70px] shadow-md fixed-header" style={{ backgroundColor: "#8294C4" }}>
             <div className="flex items-center flex-none">
@@ -163,11 +189,37 @@ const HeaderComponent = () => {
                 style={{ backgroundColor: 'transparent' }}
             />
 
-            <Input
-                placeholder="Tìm kiếm sản phẩm"
-                prefix={<SearchOutlined className="text-gray-400 px-2 cursor-pointer" />}
-                className="w-60 mr-4 rounded-lg border-transparent shadow-sm p-2"
-            />
+            <div className="relative">
+                <Input
+                    placeholder="Tìm kiếm sản phẩm"
+                    prefix={<SearchOutlined className="text-gray-400 px-2 cursor-pointer" />}
+                    className="w-60 mr-4 rounded-lg border-transparent shadow-sm p-2"
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    onFocus={() => setShowDropdown(true)}
+                />
+                {showDropdown && searchResults.length > 0 && (
+                    <div className="absolute z-50 w-full bg-white mt-1 rounded-lg shadow-lg">
+                        {searchResults.map((product) => (
+                            <div
+                                key={product.id}
+                                className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                                onClick={() => handleProductClick(product.id)}
+                            >
+                                <img
+                                    src={TOOL_URL + product.imageUrl || 'https://via.placeholder.com/40'}
+                                    alt={product.name}
+                                    className="w-10 h-10 object-cover rounded"
+                                />
+                                <div>
+                                    <p className="text-sm font-medium line-clamp-2">{product.name}</p>
+                                    <p className="text-xs text-gray-500">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {permissions?.length === 0 ? (
                 <>

@@ -19,6 +19,7 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -136,6 +137,11 @@ public class ToolService {
         FilterNode node = filterParser.parse("deleted=false and toolType.id='" + id + "'");
         FilterSpecification<Tool> spec = filterSpecificationConverter.convert(node);
 
+        Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
+        return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
+    }
+
+    public ResPaginationDTO getToolByName(Specification<Tool> spec, Pageable pageable) {
         Page<Tool> pageTools = toolRepository.findAll(spec, pageable);
         return PaginationUtil.getPaginatedResult(pageTools, pageable, ToolMapper::mapToResToolDTO);
     }
